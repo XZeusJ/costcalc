@@ -1,19 +1,56 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    {% block head %}
-        <title>{% block title %}{% block page_title %}{% endblock %} - CatChat{% endblock %}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}CostCalc{% endblock %}</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/mermaid.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('products.index') }}">CostCalc</a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">用户</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
+    <div class="container-flex">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- <h5>导航栏</h5> -->
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom" href="{{ url_for('products.manage_product') }}">产品</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom" href="{{ url_for('resources.manage_material') }}">材料</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom" href="{{ url_for('resources.manage_labor') }}">人工</a>
+                </li>
+            </ul>
+        </div>
 
-{% block nav %}
+        <!-- Main Content -->
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 
-{% endblock %}
-
-{% block content %}{% endblock %}
-{% block scripts %}
-{% endblock %}
+    {% block scripts %}
+        <script src="{{ url_for('static', filename='js/jquery-3.3.1.slim.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
+        
+    {% endblock %}
 </body>
 </html>

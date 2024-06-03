@@ -87,6 +87,14 @@ class Material(db.Model):
     name = db.Column(db.String(20), nullable=False)
     spec = db.Column(db.String(20))
     unit_price = db.Column(db.Float, default = 0.0)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'spec': self.spec,
+            'unit_price': self.unit_price
+        }
 
 class Labor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -94,6 +102,15 @@ class Labor(db.Model):
     deprec_cost = db.Column(db.Float, default = 0.0)
     elec_cost = db.Column(db.Float, default = 0.0)
     labor_cost = db.Column(db.Float, default = 0.0)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'deprec_cost': self.deprec_cost,
+            'elec_cost': self.elec_cost,
+            'labor_cost': self.labor_cost
+        }
 
 class ProductMaterial(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), primary_key=True)

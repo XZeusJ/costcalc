@@ -1,0 +1,38 @@
+
+/* global */
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+.container-flex {
+    flex: 1;
+    display: flex;
+}
+.sidebar {
+    width: 200px;
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+/* 导航栏样式 */
+.nav-link-custom {
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    color: #000000;
+    border-bottom: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: start;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link-custom:hover {
+    background-color: #007bff;
+    color: #ffffff;
+}

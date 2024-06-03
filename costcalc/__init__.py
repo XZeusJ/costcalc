@@ -7,8 +7,8 @@ from flask_wtf.csrf import CSRFError
 from costcalc.blueprints.auth import auth_bp
 from costcalc.blueprints.products import products_bp
 from costcalc.blueprints.resources import resources_bp
-from costcalc.extensions import db, login_manager, csrf
-from costcalc.models import User, Product, Material, Labor
+from costcalc.extensions import db, login_manager, csrf, bootstrap
+from costcalc.models import User, Product, Material, Labor, ProductMaterial, ProductLabor
 from costcalc.settings import config
 
 
@@ -31,6 +31,7 @@ def register_extensions(app):
     db.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
+    bootstrap.init_app(app)
 
 def register_blueprints(app):
     app.register_blueprint(auth_bp)
@@ -68,49 +69,85 @@ def register_commands(app):
         click.echo('Initialized database.')
 
     @app.cli.command()
-    @click.option('--message', default=300, help='Quantity of messages, default is 300.')
-    def forge(message):
-        pass
-        # """Generate fake data."""
-        # import random
-        # from sqlalchemy.exc import IntegrityError
+    def forge():
+        user = User(username='testuser', password_hash='hashedpassword')
+        db.session.add(user)
+        db.session.commit()
 
-        # from faker import Faker
+        material_dqj = Material(name='丁晴胶', unit_price=0.022)
+        material_bmc = Material(name='BMC', unit_price=0.025)
+        labor_my = Labor(name='模压', deprec_cost = 7, elec_cost=21, labor_cost=30)
+        labor_bz = Labor(name='包装', deprec_cost = 1, elec_cost=1, labor_cost=25)
 
-        # fake = Faker()
+        db.session.add_all([material_dqj, material_bmc, labor_my, labor_bz])
+        db.session.commit()
 
-        # click.echo('Initializing the database...')
-        # db.drop_all()
-        # db.create_all()
+        product_a = Product(name='新产品', user_id=user.id, trans_cost_kg=1)
+        db.session.add(product_a)
+        db.session.commit()
 
-        # click.echo('Forging the data...')
-        # admin = User(nickname='Grey Li', email='admin@helloflask.com')
-        # admin.set_password('helloflask')
-        # db.session.add(admin)
-        # db.session.commit()
+        product_material_dqj = ProductMaterial(product_id=product_a.id, material_id=material_dqj.id, net_weight=23, gross_weight=8,qualification_rate=0.95)
+        product_material_bmc = ProductMaterial(product_id=product_a.id, material_id=material_bmc.id, net_weight=3, gross_weight=1,qualification_rate=0.98)
+        product_labor_my = ProductLabor(product_id=product_a.id, labor_id=labor_my.id, process_time=120,capacity=4,qualification_rate=0.95)
+        product_labor_bz = ProductLabor(product_id=product_a.id, labor_id=labor_bz.id, process_time=5,capacity=1,qualification_rate=1)
 
-        # click.echo('Generating users...')
-        # for i in range(50):
-        #     user = User(nickname=fake.name(),
-        #                 bio=fake.sentence(),
-        #                 github=fake.url(),
-        #                 website=fake.url(),
-        #                 email=fake.email()
-        #                 )
-        #     db.session.add(user)
-        #     try:
-        #         db.session.commit()
-        #     except IntegrityError:
-        #         db.session.rollback()
+        db.session.add_all([product_material_dqj, product_material_bmc, product_labor_my, product_labor_bz])
+        db.session.commit()
 
-        # click.echo('Generating messages...')
-        # for i in range(message):
-        #     message = Message(
-        #         author=User.query.get(random.randint(1, User.query.count())),
-        #         body=fake.sentence(),
-        #         timestamp=fake.date_time_between('-30d', '-2d'),
-        #     )
-        #     db.session.add(message)
+        product_b = Product(name='二十柱', user_id=user.id, trans_cost_kg=1)
+        db.session.add(product_b)
+        db.session.commit()
 
-        # db.session.commit()
-        # click.echo('Done.')
+        product_material_bmc_b = ProductMaterial(product_id=product_b.id, material_id=material_bmc.id, net_weight=4, gross_weight=3,qualification_rate=0.98)
+        product_labor_my_b = ProductLabor(product_id=product_b.id, labor_id=labor_my.id, process_time=360,capacity=4,qualification_rate=0.98)
+
+        db.session.add_all([product_material_bmc_b, product_labor_my_b])
+        db.session.commit()
+
+
+    # @app.cli.command()
+    # @click.option('--message', default=300, help='Quantity of messages, default is 300.')
+    # def forge(message):
+    #     """Generate fake data."""
+    #     import random
+    #     from sqlalchemy.exc import IntegrityError
+
+    #     from faker import Faker
+
+    #     fake = Faker()
+
+    #     click.echo('Initializing the database...')
+    #     db.drop_all()
+    #     db.create_all()
+
+    #     click.echo('Forging the data...')
+    #     admin = User(nickname='Grey Li', email='admin@helloflask.com')
+    #     admin.set_password('helloflask')
+    #     db.session.add(admin)
+    #     db.session.commit()
+
+    #     click.echo('Generating users...')
+    #     for i in range(50):
+    #         user = User(nickname=fake.name(),
+    #                     bio=fake.sentence(),
+    #                     github=fake.url(),
+    #                     website=fake.url(),
+    #                     email=fake.email()
+    #                     )
+    #         db.session.add(user)
+    #         try:
+    #             db.session.commit()
+    #         except IntegrityError:
+    #             db.session.rollback()
+
+    #     click.echo('Generating messages...')
+    #     for i in range(message):
+    #         message = Message(
+    #             author=User.query.get(random.randint(1, User.query.count())),
+    #             body=fake.sentence(),
+    #             timestamp=fake.date_time_between('-30d', '-2d'),
+    #         )
+    #         db.session.add(message)
+
+    #     db.session.commit()
+    #     click.echo('Done.')
