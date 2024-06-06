@@ -1,20 +1,6 @@
 import os
-
-import sys
-import os
-
-# print("Python version:", sys.version)
-# print("sys.path:", sys.path)
-# print("FLASK_APP:", os.getenv('FLASK_APP'))
-# print("FLASK_ENV:", os.getenv('FLASK_ENV'))
-
-# 获取项目根目录
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-# 将项目根目录添加到sys.path
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-
 import click
+
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
 
@@ -116,54 +102,6 @@ def register_commands(app):
 
         db.session.add_all([product_material_bmc_b, product_labor_my_b])
         db.session.commit()
-
-
-    # @app.cli.command()
-    # @click.option('--message', default=300, help='Quantity of messages, default is 300.')
-    # def forge(message):
-    #     """Generate fake data."""
-    #     import random
-    #     from sqlalchemy.exc import IntegrityError
-
-    #     from faker import Faker
-
-    #     fake = Faker()
-
-    #     click.echo('Initializing the database...')
-    #     db.drop_all()
-    #     db.create_all()
-
-    #     click.echo('Forging the data...')
-    #     admin = User(nickname='Grey Li', email='admin@helloflask.com')
-    #     admin.set_password('helloflask')
-    #     db.session.add(admin)
-    #     db.session.commit()
-
-    #     click.echo('Generating users...')
-    #     for i in range(50):
-    #         user = User(nickname=fake.name(),
-    #                     bio=fake.sentence(),
-    #                     github=fake.url(),
-    #                     website=fake.url(),
-    #                     email=fake.email()
-    #                     )
-    #         db.session.add(user)
-    #         try:
-    #             db.session.commit()
-    #         except IntegrityError:
-    #             db.session.rollback()
-
-    #     click.echo('Generating messages...')
-    #     for i in range(message):
-    #         message = Message(
-    #             author=User.query.get(random.randint(1, User.query.count())),
-    #             body=fake.sentence(),
-    #             timestamp=fake.date_time_between('-30d', '-2d'),
-    #         )
-    #         db.session.add(message)
-
-    #     db.session.commit()
-    #     click.echo('Done.')
 
 if __name__ == '__main__':
     app = create_app()
