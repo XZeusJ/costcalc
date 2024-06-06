@@ -8,10 +8,11 @@
         <!-- 产品名称字段 -->
         <div class="form-row">
             <div class="form-group col-md-2">
-                {{ form.name.label(class="form-label") }}
+                <h5>{{ form.name.label(class="form-label") }}</h5>
                 {{ form.name(class="form-control") }}
             </div>
         </div>
+        <hr />
 
         <!-- 动态材料表单 -->
         <div class="d-flex justify-content-between align-items-center my-3">
@@ -31,6 +32,7 @@
         <hr />
 
         <!-- 运输费用字段 -->
+        <h5>运输</h5>
         <div class="form-row">
             <div class="form-group col-md-2">
                 {{ form.trans_method.label(class="form-label") }}
@@ -47,6 +49,7 @@
         </div>
         <hr/>
         <!-- 系数字段 -->
+        <h5>系数</h5>
         <div class="form-row">
             <div class="form-group col-md-2">
                 {{ form.dev_coef.label(class="form-label") }}
@@ -80,7 +83,7 @@
         <hr/>
         <!-- 提交按钮 -->
         <div class="col text-right">
-            <button type="submit" class="btn btn-primary">{{ form.submit.name }}</button>
+            <button type="submit" class="btn btn-primary">提交</button>
         </div>
     </form>
 </div>

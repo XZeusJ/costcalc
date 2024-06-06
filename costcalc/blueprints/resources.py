@@ -23,10 +23,8 @@ def manage_material():
 def new_material():
     form = MaterialForm()
     if form.validate_on_submit():
-        name = form.name.data
-        spec = form.spec.data
-        unit_price = form.unit_price.data
-        material = Material(name = name, spec = spec, unit_price = unit_price)
+        material = Material()
+        form.populate_obj(material)
         db.session.add(material)
         db.session.commit()
         flash('Material created.', 'success')
@@ -35,19 +33,14 @@ def new_material():
 
 @resources_bp.route('/material/<int:material_id>/edit', methods=['GET', 'POST'])
 def edit_material(material_id):
-    form = MaterialForm()
     material = Material.query.get_or_404(material_id)
+    form = MaterialForm(obj=material)
     if form.validate_on_submit():
-        material.name = form.name.data
-        material.spec = form.spec.data
-        material.unit_price = form.unit_price.data
+        form.populate_obj(material)
         db.session.add(material)
         db.session.commit()
         flash('Material updated.', 'success')
         return redirect(url_for('resources.manage_material'))
-    form.name.data = material.name
-    form.spec.data = material.spec
-    form.unit_price.data = material.unit_price
     return render_template('resources/edit_material.html', form = form)
 
 
@@ -58,7 +51,6 @@ def delete_material(material_id):
     db.session.commit()
     flash('Material deleted.', 'success')
     return '', 204
-    # return redirect_back()
 
 ## 人工表CURD
 @resources_bp.route('/labor/manage')
@@ -71,11 +63,8 @@ def manage_labor():
 def new_labor():
     form = LaborForm()
     if form.validate_on_submit():
-        name = form.name.data
-        deprec_cost = form.deprec_cost.data
-        elec_cost = form.elec_cost.data
-        labor_cost = form.labor_cost.data
-        labor = Labor(name=name, deprec_cost=deprec_cost, elec_cost=elec_cost, labor_cost=labor_cost)
+        labor = Labor()
+        form.populate_obj(labor)
         db.session.add(labor)
         db.session.commit()
         flash('Labor created.', 'success')
@@ -84,21 +73,14 @@ def new_labor():
 
 @resources_bp.route('/labor/<int:labor_id>/edit', methods=['GET', 'POST'])
 def edit_labor(labor_id):
-    form = LaborForm()
     labor = Labor.query.get_or_404(labor_id)
+    form = LaborForm(obj=labor)
     if form.validate_on_submit():
-        labor.name = form.name.data
-        labor.deprec_cost = form.deprec_cost.data
-        labor.elec_cost = form.elec_cost.data
-        labor.labor_cost = form.labor_cost.data
+        form.populate_obj(labor)
         db.session.add(labor)
         db.session.commit()
         flash('Labor updated.', 'success')
         return redirect(url_for('resources.manage_labor'))
-    form.name.data = labor.name
-    form.deprec_cost.data = labor.deprec_cost
-    form.elec_cost.data = labor.elec_cost
-    form.labor_cost.data = labor.labor_cost
     return render_template('resources/edit_labor.html', form = form)
 
 

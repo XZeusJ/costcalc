@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-    <h3>Edit Product</h3>
+    <h3>编辑产品</h3>
     <form method="post" action="{{ url_for('products.edit_product', product_id=product.id) }}">
         {{ form.hidden_tag() }}
         
@@ -13,20 +13,8 @@
                 {{ form.name.label(class="form-label") }}
                 {{ form.name(class="form-control") }}
             </div>
-            <div class="form-group col-md-3">
-                {{ form.trans_method.label(class="form-label") }}
-                {{ form.trans_method(class="form-control") }}
-            </div>
-            <div class="form-group col-md-3">
-                {{ form.trans_dest.label(class="form-label") }}
-                {{ form.trans_dest(class="form-control") }}
-            </div>
-            <div class="form-group col-md-3">
-                {{ form.trans_cost_kg.label(class="form-label") }}
-                {{ form.trans_cost_kg(class="form-control") }}
-            </div>
         </div>
-        <hr/>
+        <hr />
         
         <!-- 动态材料表单 -->
         <h5>材料</h5>
@@ -80,6 +68,24 @@
         </div>
         <hr/>
         
+        <!-- 运输费 -->
+        <h5>运输</h5>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                {{ form.trans_method.label(class="form-label") }}
+                {{ form.trans_method(class="form-control") }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ form.trans_dest.label(class="form-label") }}
+                {{ form.trans_dest(class="form-control") }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ form.trans_cost_kg.label(class="form-label") }}
+                {{ form.trans_cost_kg(class="form-control") }}
+            </div>
+        </div>
+        <hr/>
+
         <!-- 提交按钮 -->
         <div class="form-row">
             <div class="col text-right">
