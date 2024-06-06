@@ -1,5 +1,19 @@
 import os
 
+import sys
+import os
+
+# print("Python version:", sys.version)
+# print("sys.path:", sys.path)
+# print("FLASK_APP:", os.getenv('FLASK_APP'))
+# print("FLASK_ENV:", os.getenv('FLASK_ENV'))
+
+# 获取项目根目录
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+# 将项目根目录添加到sys.path
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 import click
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
@@ -24,7 +38,6 @@ def create_app(config_name = None):
     register_blueprints(app)
     register_errors(app)
     register_commands(app)
-
     return app
 
 def register_extensions(app):
@@ -151,3 +164,7 @@ def register_commands(app):
 
     #     db.session.commit()
     #     click.echo('Done.')
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(port=8000)

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block content %}
+<div class="container">
+    <h3>Edit Product</h3>
+    <form method="post" action="{{ url_for('products.edit_product', product_id=product.id) }}">
+        {{ form.hidden_tag() }}
+        
+        <!-- 产品信息表单字段 -->
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ form.trans_method.label(class="form-label") }}
+                {{ form.trans_method(class="form-control") }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ form.trans_dest.label(class="form-label") }}
+                {{ form.trans_dest(class="form-control") }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ form.trans_cost_kg.label(class="form-label") }}
+                {{ form.trans_cost_kg(class="form-control") }}
+            </div>
+        </div>
+        <hr/>
+        
+        <!-- 动态材料表单 -->
+        <h5>材料</h5>
+        <div id="pmforms-container">
+            {% for pmform in pmforms %}
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    {{ pmform.material_choices.label(class="form-label") }}
+                    {{ pmform.material_choices(class="form-control") }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ pmform.net_weight.label(class="form-label") }}
+                    {{ pmform.net_weight(class="form-control") }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ pmform.gross_weight.label(class="form-label") }}
+                    {{ pmform.gross_weight(class="form-control") }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ pmform.qualification_rate.label(class="form-label") }}
+                    {{ pmform.qualification_rate(class="form-control") }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <hr/>
+        
+        <!-- 动态人工表单 -->
+        <h5>人工</h5>
+        <div id="plforms-container">
+            {% for plform in plforms %}
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    {{ plform.labor_choices.label(class="form-label") }}
+                    {{ plform.labor_choices(class="form-control") }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ plform.process_time.label(class="form-label") }}
+                    {{ plform.process_time(class="form-control") }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ plform.capacity.label(class="form-label") }}
+                    {{ plform.capacity(class="form-control") }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ plform.qualification_rate.label(class="form-label") }}
+                    {{ plform.qualification_rate(class="form-control") }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <hr/>
+        
+        <!-- 提交按钮 -->
+        <div class="form-row">
+            <div class="col text-right">
+                <button type="submit" class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

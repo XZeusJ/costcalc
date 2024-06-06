@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% macro render_dynamic_table(data) %}
+    {% if data %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                {{ render_table_head(data[0]) }}
+            </thead>
+            <tbody>
+                {% for item in data %}
+                    {{ render_table_row(item) }}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+{% endmacro %}
+
+{% macro render_table_head(item) %}
+    <tr>
+        {% for key in item.keys() %}
+            <th>{{ key | capitalize }}</th>
+        {% endfor %}
+    </tr>
+{% endmacro %}
+
+{% macro render_table_row(item) %}
+    <tr>
+        {% for key, value in item.items() %}
+            <td>{{ value }}</td>
+        {% endfor %}
+    </tr>
+{% endmacro %}   
+
+{% macro render_dict_horizontal_table(data) %}
+    {% if data %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    {% for key in data.keys() %}
+                        <th>{{ key }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    {% for value in data.values() %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+{% endmacro %}
+
+{% block content %}
+
+<h3>产品名称：{{ product.name}}</h3>
+{{ render_dynamic_table(product.materials_dict) }}
+{{ render_dynamic_table(product.labors_dict) }} 
+
+{{ render_dict_horizontal_table(product.trans_dict) }}
+{{ render_dict_horizontal_table(product.coef_dict) }}
+
+{{ render_dict_horizontal_table(product.cost_dict)}}
+
+{% endblock %}

@@ -17,23 +17,21 @@ class User(db.Model, UserMixin):
 
 
 class Product(db.Model):
-
-    ## 定义只和该product相关的参数
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
 
-    ## 定义product和user
+    ## User 一对多 Product
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) #定义外键：product表相对于user表为多侧
     user = db.relationship('User', back_populates='products')
 
-    ## material、labor表的关系
+    ## Product 多对多 material、labor
     materials = db.relationship('ProductMaterial') #定义关系属性：product表相对于这两张表为一侧
     labors = db.relationship('ProductLabor') #这两张表为中间表，用来构建多对多关系
     
     # 运输费
     trans_method = db.Column(db.String(20),  nullable=True)
     trans_dest = db.Column(db.String(20),  nullable=True)
-    trans_cost_kg = db.Column(db.Float, default=0.0)
+    trans_cost_kg = db.Column(db.Float, default=1.0)
 
     # 模具费、打样上机费
     # mold = db.Column(db.Float, default=0.0)
@@ -50,20 +48,11 @@ class Product(db.Model):
     
     @property # 原材料费
     def material_cost(self):
-        cost = 0
-        for pm in self.materials:
-            m = pm.material
-            cost += m.unit_price * (pm.net_weight+pm.gross_weight) / pm.qualification_rate
-        print
-        return cost
-    
+       return sum(pm.ttl for pm in self.materials)
+
     @property # 人工费
     def labor_cost(self):
-        cost = 0
-        for pl in self.labors:
-            l = pl.labor
-            cost += (l.deprec_cost+l.elec_cost+l.labor_cost)*pl.process_time/3600/pl.capacity/pl.qualification_rate
-        return cost
+        return sum(pl.ttl for pl in self.labors)
 
     @property # 运输费
     def trans_cost(self):
@@ -80,6 +69,93 @@ class Product(db.Model):
     @property # 含税价
     def post_tax_cost(self):
         return self.pre_tax_cost*1.13
+
+    @property
+    def materials_dict(self):
+        return [
+            {
+                '材料名称': pm.material.name,
+                '材料规格': pm.material.spec,
+                '单价/g': pm.material.unit_price,
+                '材料净重': pm.net_weight,
+                '材料毛边': pm.gross_weight,
+                '材料毛重': pm.total_weight,
+                '合格率': pm.qualification_rate,
+                'TTL(CNY)': round(pm.ttl, 4)
+            }
+            for pm in self.materials
+        ]
+
+    @property
+    def labors_dict(self):
+        return [
+            {
+                '工序': pl.labor.name,
+                '设备折旧': pl.labor.deprec_cost,
+                '电费CNY/H': pl.labor.elec_cost,
+                '人工CNY/H': pl.labor.labor_cost,
+                '工序工时/秒': pl.process_time,
+                '产能/次': pl.capacity,
+                '合格率': pl.qualification_rate,
+                'TTL(CNY)': round(pl.ttl, 4)
+            }
+            for pl in self.labors
+        ]
+
+    @property
+    def trans_dict(self):
+        return {
+            '运输方式': self.trans_method,
+            '目的地': self.trans_dest,
+            '运输费/KG': self.trans_cost_kg,
+            '运输费/个': self.trans_cost
+        }
+
+    @property
+    def coef_dict(self):
+        return {
+            '研发费用': self.dev_coef,
+            '厂房费用': self.fac_coef,
+            '管理费': self.admin_coef,
+            '销售费': self.sale_coef,
+            '财务费': self.finance_coef,
+            '其他税款': self.tax_coef,
+            '利润': self.profit_coef
+        }
+    
+    @property
+    def cost_dict(self):
+        return {
+            '材料费': round(self.material_cost, 3),
+            '人工费': round(self.labor_cost, 3),
+            '运输费': round(self.trans_cost, 3),
+            '税前': round(self.pre_tax_cost, 6),
+            '税后': round(self.post_tax_cost, 6)
+        }
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'user_id': self.user_id,
+            'trans_method': self.trans_method,
+            'trans_dest': self.trans_dest,
+            'trans_cost_kg': self.trans_cost_kg,
+            'dev_coef': self.dev_coef,
+            'fac_coef': self.fac_coef,
+            'admin_coef': self.admin_coef,
+            'sale_coef': self.sale_coef,
+            'finance_coef': self.finance_coef,
+            'tax_coef': self.tax_coef,
+            'profit_coef': self.profit_coef,
+            'material_cost': round(self.material_cost, 3),
+            'labor_cost': round(self.labor_cost, 3),
+            'trans_cost': round(self.trans_cost, 3),
+            'pre_tax_cost': round(self.pre_tax_cost, 6),
+            'post_tax_cost': round(self.post_tax_cost, 6),
+            'materials': [pm.to_dict() for pm in self.materials],
+            'labors': [pl.to_dict() for pl in self.labors]
+        }
 
 
 class Material(db.Model):
@@ -121,6 +197,24 @@ class ProductMaterial(db.Model):
     gross_weight = db.Column(db.Float, default = 0.0)
     qualification_rate = db.Column(db.Float, default = 1.0)
 
+    @property
+    def total_weight(self):
+        return self.net_weight + self.gross_weight
+
+    @property
+    def ttl(self):
+        return self.total_weight * self.material.unit_price / self.qualification_rate
+
+    def to_dict(self):
+        return {
+            'product_id': self.product_id,
+            'material_id': self.material_id,
+            'net_weight': self.net_weight,
+            'gross_weight': self.gross_weight,
+            'qualification_rate': self.qualification_rate,
+            'material': self.material.to_dict() if self.material else None
+        }
+
 class ProductLabor(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), primary_key=True)
     labor_id = db.Column(db.Integer, db.ForeignKey('labor.id'), primary_key=True)
@@ -129,3 +223,18 @@ class ProductLabor(db.Model):
     process_time = db.Column(db.Float, default = 0.0)
     capacity = db.Column(db.Float, default = 0.0)
     qualification_rate = db.Column(db.Float, default = 1.0)
+
+    @property
+    def ttl(self):
+        sl = self.labor
+        return (sl.deprec_cost + sl.elec_cost + sl.labor_cost)* self.process_time /3600/self.capacity/self.qualification_rate
+
+    def to_dict(self):
+        return {
+            'product_id': self.product_id,
+            'labor_id': self.labor_id,
+            'process_time': self.process_time,
+            'capacity': self.capacity,
+            'qualification_rate': self.qualification_rate,
+            'labor': self.labor.to_dict() if self.labor else None
+        }

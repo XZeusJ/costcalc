@@ -36,3 +36,30 @@ body {
     background-color: #007bff;
     color: #ffffff;
 }
+
+/* 表格样式 */
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+th, td {
+    width: 100px !important; /* 固定宽度 */
+    height: 50px !important; /* 固定高度 */
+    text-align: center; /* 可选：居中文本 */
+    vertical-align: middle; /* 可选：居中垂直对齐 */
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 10px; /* 调整表单组的下间距 */
+}
+
+.form-control {
+    padding: 5px 10px; /* 调整表单控件的内边距 */
+    font-size: 14px; /* 调整字体大小 */
+}
+
+label {
+    margin-bottom: 5px; /* 调整标签的下间距 */
+}

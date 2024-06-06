@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <form method="post" action="{{ url_for('products.new_product') }}" id="product-form">
+        {{ form.hidden_tag() }}
+
+        <!-- 产品名称字段 -->
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+        </div>
+
+        <!-- 动态材料表单 -->
+        <div class="d-flex justify-content-between align-items-center my-3">
+            <h5 class="mb-0">材料</h5>
+            <button type="button" class="btn btn-primary btn-sm" onclick="addPMForm()">+</button>
+        </div>
+        <div id="pmforms-container"></div>
+        <hr/>
+
+
+        <!-- 动态人工表单 -->
+        <div class="d-flex justify-content-between align-items-center my-3">
+            <h5 class="mb-0">人工</h5>
+            <button type="button" class="btn btn-primary btn-sm"  onclick="addPLForm()">+</button>
+        </div>
+        <div id="plforms-container"></div>
+        <hr />
+
+        <!-- 运输费用字段 -->
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                {{ form.trans_method.label(class="form-label") }}
+                {{ form.trans_method(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.trans_dest.label(class="form-label") }}
+                {{ form.trans_dest(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.trans_cost_kg.label(class="form-label") }}
+                {{ form.trans_cost_kg(class="form-control") }}
+            </div>
+        </div>
+        <hr/>
+        <!-- 系数字段 -->
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                {{ form.dev_coef.label(class="form-label") }}
+                {{ form.dev_coef(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.fac_coef.label(class="form-label") }}
+                {{ form.fac_coef(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.admin_coef.label(class="form-label") }}
+                {{ form.admin_coef(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.sale_coef.label(class="form-label") }}
+                {{ form.sale_coef(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.finance_coef.label(class="form-label") }}
+                {{ form.finance_coef(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.tax_coef.label(class="form-label") }}
+                {{ form.tax_coef(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.profit_coef.label(class="form-label") }}
+                {{ form.profit_coef(class="form-control") }}
+            </div>
+        </div>
+        <hr/>
+        <!-- 提交按钮 -->
+        <div class="col text-right">
+            <button type="submit" class="btn btn-primary">{{ form.submit.name }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+<script>
+    let pmFormCounter = 0;
+    let plFormCounter = 0;
+
+    function addPMForm() {
+        const container = document.getElementById('pmforms-container');
+        pmFormCounter++;
+        fetch("{{ url_for('products.new_pmform') }}")
+            .then(response => response.text())
+            .then(html => {
+                const newForm = document.createElement('div');
+                newForm.innerHTML = html.replace(/__prefix__/g, pmFormCounter);
+                container.appendChild(newForm);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function addPLForm() {
+        const container = document.getElementById('plforms-container');
+        plFormCounter++;
+        fetch("{{ url_for('products.new_plform') }}")
+            .then(response => response.text())
+            .then(html => {
+                const newForm = document.createElement('div');
+                newForm.innerHTML = html.replace(/__prefix__/g, plFormCounter);
+                container.appendChild(newForm);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+{% endblock %}
