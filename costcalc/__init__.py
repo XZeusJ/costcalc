@@ -1,5 +1,6 @@
 import os
 import click
+import logging
 
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
@@ -19,6 +20,9 @@ def create_app(config_name = None):
 
     app = Flask('costcalc')
     app.config.from_object(config[config_name])
+
+    logging.basicConfig(level=logging.INFO)
+    app.logger.info(f"Running in {config_name} mode")
 
     register_extensions(app)
     register_blueprints(app)
@@ -69,7 +73,8 @@ def register_commands(app):
 
     @app.cli.command()
     def forge():
-        user = User(username='testuser', password_hash='hashedpassword')
+        user = User(username='testuser')
+        user.set_password('plaintextpassword')
         db.session.add(user)
         db.session.commit()
 
