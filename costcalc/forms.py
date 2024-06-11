@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, ValidationError, HiddenField, \
-    BooleanField, PasswordField, FloatField, SelectMultipleField
+    BooleanField, PasswordField, FloatField, SelectMultipleField, IntegerField
 from wtforms.validators import DataRequired, Length, Optional
 from costcalc.models import Material, Labor
 
@@ -18,6 +18,9 @@ class MaterialForm(FlaskForm):
 
 class ProductMaterialForm(FlaskForm):
     material_choices = SelectField('选择材料', coerce=int, validators=[DataRequired()])
+    material_name = StringField('材料名称', render_kw={'readonly': True})
+
+    materialID = IntegerField('材料id', render_kw={'readonly': True}) #用来传递给edit_product.html
 
     net_weight = FloatField('材料净重', validators=[Optional()], default=0.0)
     gross_weight = FloatField('材料毛边', validators=[Optional()], default=0.0)
@@ -36,7 +39,10 @@ class LaborForm(FlaskForm):
 
 class ProductLaborForm(FlaskForm):
     labor_choices = SelectField('选择工序', coerce=int, validators=[DataRequired()])
-    
+    labor_name = StringField('工序名称', render_kw={'readonly': True})
+
+    laborID = IntegerField('工序id', render_kw={'readonly': True}) #用来传递给edit_product.html
+
     process_time = FloatField('工序工时/秒', default = 0.0)
     capacity = FloatField('产能/次', default = 0.0)
     qualification_rate = FloatField('合格率', default = 1.0)

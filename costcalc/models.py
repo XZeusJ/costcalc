@@ -221,7 +221,7 @@ class ProductLabor(db.Model):
     labor = db.relationship('Labor')
 
     process_time = db.Column(db.Float, default = 0.0)
-    capacity = db.Column(db.Float, default = 0.0)
+    capacity = db.Column(db.Float, default = 1.0)
     qualification_rate = db.Column(db.Float, default = 1.0)
 
     @property

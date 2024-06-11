@@ -98,12 +98,20 @@
 
     function addPMForm() {
         const container = document.getElementById('pmforms-container');
-        pmFormCounter++;
         fetch("{{ url_for('products.new_pmform') }}")
             .then(response => response.text())
             .then(html => {
+                pmFormCounter++;
                 const newForm = document.createElement('div');
                 newForm.innerHTML = html.replace(/__prefix__/g, pmFormCounter);
+
+                // 设置select框的默认值为空
+                const newSelect = newForm.querySelector('select[name$="-material_choices"]');
+                newSelect.value = "";  // 设置默认值为空
+
+                // 添加change事件监听器
+                newSelect.addEventListener('change', checkDuplicateMaterials);
+
                 container.appendChild(newForm);
             })
             .catch(error => console.error('Error:', error));
@@ -111,15 +119,53 @@
 
     function addPLForm() {
         const container = document.getElementById('plforms-container');
-        plFormCounter++;
         fetch("{{ url_for('products.new_plform') }}")
             .then(response => response.text())
             .then(html => {
+                plFormCounter++;
                 const newForm = document.createElement('div');
                 newForm.innerHTML = html.replace(/__prefix__/g, plFormCounter);
+
+                // 设置select框的默认值为空
+                const newSelect = newForm.querySelector('select[name$="-labor_choices"]');
+                newSelect.value = "";  // 设置默认值为空
+
+                // 添加change事件监听器
+                newSelect.addEventListener('change', checkDuplicateLabors);
+
                 container.appendChild(newForm);
             })
             .catch(error => console.error('Error:', error));
+    }
+
+    function checkDuplicateMaterials(event) {
+        const selectedMaterials = Array.from(document.querySelectorAll('select[name$="-material_choices"]')).map(select => select.value);
+        const currentSelect = event.target;
+        const currentValue = currentSelect.value;
+
+        // 检查是否有重复项
+        const isDuplicate = selectedMaterials.filter(value => value === currentValue).length > 1;
+        if (isDuplicate) {
+            alert('不能添加相同的材料');
+            currentSelect.value = ""; // 重置选择框
+        }
+    }
+
+    function checkDuplicateLabors(event) {
+        const selectedLabors = Array.from(document.querySelectorAll('select[name$="-labor_choices"]')).map(select => select.value);
+        const currentSelect = event.target;
+        const currentValue = currentSelect.value;
+
+        // 检查是否有重复项
+        const isDuplicate = selectedLabors.filter(value => value === currentValue).length > 1;
+        if (isDuplicate) {
+            alert('不能添加相同的工序');
+            currentSelect.value = ""; // 重置选择框
+        }
+    }
+    
+    function removeForm(button) {
+        button.closest('.form-row').remove();
     }
 </script>
 {% endblock %}

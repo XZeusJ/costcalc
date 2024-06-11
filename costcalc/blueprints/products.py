@@ -27,56 +27,27 @@ def new_product():
     form = ProductForm()
     
     if form.validate_on_submit():
-        new_product = Product(
-            name=form.name.data,
-            user_id = 1, 
-            trans_method=form.trans_method.data,
-            trans_dest=form.trans_dest.data,
-            trans_cost_kg=form.trans_cost_kg.data,
-            dev_coef=form.dev_coef.data,
-            fac_coef=form.fac_coef.data,
-            admin_coef=form.admin_coef.data,
-            sale_coef=form.sale_coef.data,
-            finance_coef=form.finance_coef.data,
-            tax_coef=form.tax_coef.data,
-            profit_coef=form.profit_coef.data
-        )
+        new_product = Product(user_id = 1)
+        form.populate_obj(new_product)
         db.session.add(new_product)
-        db.session.commit()
-
+        
         # 处理动态添加的ProductMaterialForms
         for key in request.form:
-            if key.startswith('material_choices-') and key.endswith('-material_choices'):
+            if key.startswith('pmform-') and key.endswith('-material_choices'):
                 suffix = key.split('-')[1]
-                material_id = request.form.get(f'material_choices-{suffix}-material_choices')
-                net_weight = request.form.get(f'material_choices-{suffix}-net_weight')
-                gross_weight = request.form.get(f'material_choices-{suffix}-gross_weight')
-                qualification_rate = request.form.get(f'material_choices-{suffix}-qualification_rate')
-                new_product_material = ProductMaterial(
-                    product_id=new_product.id,
-                    material_id=material_id,
-                    net_weight=net_weight,
-                    gross_weight=gross_weight,
-                    qualification_rate=qualification_rate
-                )
-                db.session.add(new_product_material)
+                material_form = ProductMaterialForm(prefix=f"pmform-{suffix}-")
+                material = ProductMaterial(product_id=new_product.id, material_id = material_form.material_choices.data)
+                material_form.populate_obj(material)
+                db.session.add(material)
 
         # 处理动态添加的ProductLaborForms
         for key in request.form:
-            if key.startswith('labor_choices-') and key.endswith('-labor_choices'):
+            if key.startswith('plform-') and key.endswith('-labor_choices'):
                 suffix = key.split('-')[1]
-                labor_id = request.form.get(f'labor_choices-{suffix}-labor_choices')
-                process_time = request.form.get(f'labor_choices-{suffix}-process_time')
-                capacity = request.form.get(f'labor_choices-{suffix}-capacity')
-                qualification_rate = request.form.get(f'labor_choices-{suffix}-qualification_rate')
-                new_product_labor = ProductLabor(
-                    product_id=new_product.id,
-                    labor_id=labor_id,
-                    process_time=process_time,
-                    capacity=capacity,
-                    qualification_rate=qualification_rate
-                )
-                db.session.add(new_product_labor)
+                labor_form = ProductLaborForm(prefix=f"plform-{suffix}-")
+                labor = ProductLabor(product_id=new_product.id, labor_id = labor_form.labor_choices.data)
+                labor_form.populate_obj(labor)
+                db.session.add(labor)
 
         db.session.commit()
         flash('Product created.', 'success')
@@ -85,12 +56,12 @@ def new_product():
 
 @products_bp.route('/productmaterial/new')
 def new_pmform():
-    pmform = ProductMaterialForm(prefix="material_choices-__prefix__-")
+    pmform = ProductMaterialForm(prefix="pmform-__prefix__-")
     return render_template('products/_pmform.html', form = pmform)
 
 @products_bp.route('/productlabor/new')
 def new_plform():
-    plform = ProductLaborForm(prefix="labor_choices-__prefix__-")
+    plform = ProductLaborForm(prefix="plform-__prefix__-")
     return render_template('products/_plform.html', form = plform)
 
 @products_bp.route('/product/<int:product_id>/edit', methods=['GET', 'POST'])
@@ -99,17 +70,45 @@ def edit_product(product_id):
     form = ProductForm(obj=product)
 
     pms = ProductMaterial.query.filter_by(product_id=product_id).all()
-    pmforms = [ProductMaterialForm(prefix=f'pmform-{i}', obj=pm) for i, pm in enumerate(pms)]
+    pmforms = []
+    for i, pm in enumerate(pms):
+        pmform = ProductMaterialForm(prefix=f'pmform-{i}', obj=pm)
+        pmform.material_name.data = pm.material.name  # 设置材料名称字段的值
+        pmform.materialID.data = pm.material.id  # 设置材料ID字段的值用来在edit_product.html中异步删除pm实例
+        pmforms.append(pmform)
 
     pls = ProductLabor.query.filter_by(product_id=product_id).all()
-    plforms = [ProductLaborForm(prefix=f'plform-{i}', obj=pl) for i, pl in enumerate(pls)]
+    plforms = []
+    for i, pl in enumerate(pls):
+        plform = ProductLaborForm(prefix=f'plform-{i}', obj=pl)
+        plform.labor_name.data = pl.labor.name
+        plform.laborID.data = pl.labor.id
+        plforms.append(plform)
 
     if form.validate_on_submit():
+        # 更改旧表单数据
         form.populate_obj(product)
         for pmform, pm in zip(pmforms, pms):
             pmform.populate_obj(pm)
         for plform, pl in zip(plforms, pls):
             plform.populate_obj(pl)
+
+        # 生成新表单数据
+        for key in request.form:
+            if key.startswith('pmform-') and key.endswith('-material_choices'):
+                suffix = key.split('-')[1]
+                material_form = ProductMaterialForm(prefix=f"pmform-{suffix}-")
+                material = ProductMaterial(product_id=product_id, material_id = material_form.material_choices.data)
+                material_form.populate_obj(material)
+                db.session.add(material)
+
+        for key in request.form:
+            if key.startswith('plform-') and key.endswith('-labor_choices'):
+                suffix = key.split('-')[1]
+                labor_form = ProductLaborForm(prefix=f"plform-{suffix}-")
+                labor = ProductLabor(product_id=product_id, labor_id = labor_form.labor_choices.data)
+                labor_form.populate_obj(labor)
+                db.session.add(labor)
 
         db.session.commit()
         flash('Product updated.', 'success')
@@ -131,3 +130,23 @@ def delete_product(product_id):
     
     flash('Product and its associated materials and labors deleted.', 'success')
     return '', 204
+
+@products_bp.route('/product/<int:product_id>/material/<int:material_id>/delete', methods=['DELETE'])
+def delete_product_material(product_id, material_id):
+    product_material = ProductMaterial.query.filter_by(product_id=product_id, material_id=material_id).first()
+    if not product_material:
+        return jsonify({'error': 'ProductMaterial not found'}), 404
+
+    db.session.delete(product_material)
+    db.session.commit()
+    return jsonify({'message': 'ProductMaterial deleted'}), 200
+
+@products_bp.route('/product/<int:product_id>/labor/<int:labor_id>/delete', methods=['DELETE'])
+def delete_product_labor(product_id, labor_id):
+    product_labor = ProductLabor.query.filter_by(product_id=product_id, labor_id=labor_id).first()
+    if not product_labor:
+        return jsonify({'error': 'ProductLabor not found'}), 404
+
+    db.session.delete(product_labor)
+    db.session.commit()
+    return jsonify({'message': 'ProductLabor deleted'}), 200
