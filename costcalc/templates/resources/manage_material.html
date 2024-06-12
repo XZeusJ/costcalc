@@ -2,8 +2,7 @@
 {% from 'bootstrap5/form.html' import render_form %}
 
 {% block content%}
-    <a class="btn btn-primary" href="{{ url_for('resources.new_material')}}">增加</a>
-    <div id="table"></div>
+    <div id="table" data-new-material-url="{{ url_for('resources.new_material') }}"></div>
 {% endblock %}
 
 

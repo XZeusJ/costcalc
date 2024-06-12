@@ -2,8 +2,7 @@
 {% from 'bootstrap5/form.html' import render_form %}
 
 {% block content%}
-<a class="btn btn-primary" href="{{ url_for('products.new_product')}}">增加</a>
-<div id="table"></div>
+<div id="table" data-new-product-url="{{ url_for('products.new_product') }}"></div>
 {% endblock %}
 
 
@@ -13,5 +12,8 @@
     // 将 materials 数据转换为 JSON 并嵌入到 JavaScript 变量中
     let data = {{ products | tojson | safe }};
 </script>
+
 <script src="{{ url_for('static', filename='js/product.js') }}"></script>
+
 {% endblock %}
+

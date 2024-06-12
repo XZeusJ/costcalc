@@ -43,6 +43,7 @@ table {
     table-layout: fixed;
 }
 
+
 th, td {
     width: 100px !important; /* 固定宽度 */
     height: 50px !important; /* 固定高度 */
