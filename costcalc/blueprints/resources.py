@@ -6,12 +6,6 @@ from costcalc.utils import redirect_back
 
 resources_bp = Blueprint('resources', __name__)
 
-# @resources_bp.route('/resources')
-# def home():
-#     materials = Material.query.all()
-#     materials_list = [material.to_dict() for material in materials]
-#     return render_template('resources/home.html', materials = materials_list)
-
 ## 材料表CURD
 @resources_bp.route('/material/manage')
 def manage_material():
