@@ -2,6 +2,9 @@
 
 {% block content %}
 <div class="container">
+    <h3>新增产品</h3>
+    <hr />
+    
     <form method="post" action="{{ url_for('products.new_product') }}" id="product-form">
         {{ form.hidden_tag() }}
 
@@ -17,18 +20,18 @@
         <!-- 动态材料表单 -->
         <div class="d-flex justify-content-between align-items-center my-3">
             <h5 class="mb-0">材料</h5>
-            <button type="button" class="btn btn-primary btn-sm" onclick="addPMForm()">+</button>
+            <button type="button" class="btn btn-primary btn-sm" id="add-material-btn">+</button>
         </div>
-        <div id="pmforms-container"></div>
+        <div id="materialforms-container"></div>
         <hr/>
 
 
         <!-- 动态人工表单 -->
         <div class="d-flex justify-content-between align-items-center my-3">
             <h5 class="mb-0">人工</h5>
-            <button type="button" class="btn btn-primary btn-sm"  onclick="addPLForm()">+</button>
+            <button type="button" class="btn btn-primary btn-sm" id="add-labor-btn">+</button>
         </div>
-        <div id="plforms-container"></div>
+        <div id="laborforms-container"></div>
         <hr />
 
         <!-- 运输费用字段 -->
@@ -92,80 +95,90 @@
 
 {% block scripts %}
 {{ super() }}
+<script type="text/javascript">
+    var new_productmaterialform_url = "{{ url_for('products.new_pmform') }}";
+    var new_productlaborform_url = "{{ url_for('products.new_plform') }}";
+</script>
 <script>
-    let pmFormCounter = 0;
-    let plFormCounter = 0;
+    let formCounter = {
+        material: 0,
+        labor: 0
+    };
 
-    function addPMForm() {
-        const container = document.getElementById('pmforms-container');
-        fetch("{{ url_for('products.new_pmform') }}")
+    function addForm(type) {
+        // 确定使用哪个URL
+        const url = type === 'material' ? new_productmaterialform_url : new_productlaborform_url;
+        const container = document.getElementById(`${type}forms-container`);
+
+        fetch(url)
             .then(response => response.text())
             .then(html => {
-                pmFormCounter++;
+                formCounter[type]++;
                 const newForm = document.createElement('div');
-                newForm.innerHTML = html.replace(/__prefix__/g, pmFormCounter);
-
-                // 设置select框的默认值为空
-                const newSelect = newForm.querySelector('select[name$="-material_choices"]');
-                newSelect.value = "";  // 设置默认值为空
-
-                // 添加change事件监听器
-                newSelect.addEventListener('change', checkDuplicateMaterials);
-
+                newForm.innerHTML = html.replace(/__prefix__/g, formCounter[type]);
+                const newSelect = newForm.querySelector(`select[name$="-${type}_choices"]`);
                 container.appendChild(newForm);
+                initializeSelect2WithPlaceholder(newSelect, `Select a ${type}`);
             })
             .catch(error => console.error('Error:', error));
     }
 
-    function addPLForm() {
-        const container = document.getElementById('plforms-container');
-        fetch("{{ url_for('products.new_plform') }}")
-            .then(response => response.text())
-            .then(html => {
-                plFormCounter++;
-                const newForm = document.createElement('div');
-                newForm.innerHTML = html.replace(/__prefix__/g, plFormCounter);
+    function initializeSelect2WithPlaceholder(newSelect, placeholderText) {
+        const emptyOption = document.createElement('option');
+        emptyOption.value = "";
+        emptyOption.disabled = true;
+        emptyOption.selected = true;
+        emptyOption.hidden = true;
 
-                // 设置select框的默认值为空
-                const newSelect = newForm.querySelector('select[name$="-labor_choices"]');
-                newSelect.value = "";  // 设置默认值为空
-
-                // 添加change事件监听器
-                newSelect.addEventListener('change', checkDuplicateLabors);
-
-                container.appendChild(newForm);
-            })
-            .catch(error => console.error('Error:', error));
+        newSelect.insertBefore(emptyOption, newSelect.firstChild);
+        $(newSelect).select2({
+            placeholder: placeholderText,
+            allowClear: true,
+            width: '100%'
+        });
+        // 打开时聚焦搜索框
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
     }
 
-    function checkDuplicateMaterials(event) {
-        const selectedMaterials = Array.from(document.querySelectorAll('select[name$="-material_choices"]')).map(select => select.value);
-        const currentSelect = event.target;
-        const currentValue = currentSelect.value;
 
-        // 检查是否有重复项
-        const isDuplicate = selectedMaterials.filter(value => value === currentValue).length > 1;
-        if (isDuplicate) {
-            alert('不能添加相同的材料');
-            currentSelect.value = ""; // 重置选择框
-        }
-    }
+    document.getElementById('add-material-btn').addEventListener('click', function() {
+        addForm('material');
+    });
 
-    function checkDuplicateLabors(event) {
-        const selectedLabors = Array.from(document.querySelectorAll('select[name$="-labor_choices"]')).map(select => select.value);
-        const currentSelect = event.target;
-        const currentValue = currentSelect.value;
+    document.getElementById('add-labor-btn').addEventListener('click', function() {
+        addForm('labor');
+    });
 
-        // 检查是否有重复项
-        const isDuplicate = selectedLabors.filter(value => value === currentValue).length > 1;
-        if (isDuplicate) {
-            alert('不能添加相同的工序');
-            currentSelect.value = ""; // 重置选择框
-        }
-    }
-    
     function removeForm(button) {
         button.closest('.form-row').remove();
     }
+
+    // 新添加的检查重复函数和修改的表单提交事件
+    function checkDuplicatesBeforeSubmit() {
+        let values = [];
+        let isDuplicate = false;
+        
+        $('select').each(function() {
+            const selectedValue = $(this).val();
+            if (values.indexOf(selectedValue) !== -1 && selectedValue !== "") {
+                isDuplicate = true;
+                return false; // 有重复，终止循环
+            }
+            values.push(selectedValue);
+        });
+
+        return isDuplicate;
+    }
+
+    $(document).ready(function() {
+        $('#product-form').on('submit', function(e) {
+            if (checkDuplicatesBeforeSubmit()) {
+                e.preventDefault(); // 阻止表单提交
+                alert('你有重复的材料/人工选项，请选择不同的材料/人工选项。');
+            }
+        });
+    });
 </script>
 {% endblock %}

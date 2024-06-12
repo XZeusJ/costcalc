@@ -7,7 +7,9 @@
     <title>{% block title %}CostCalc{% endblock %}</title>
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/mermaid.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    
 </head>
 <body>
     <!-- Top Navigation Bar -->
@@ -56,6 +58,7 @@
         <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
         
     {% endblock %}
 </body>
