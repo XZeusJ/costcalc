@@ -2,6 +2,11 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from costcalc.extensions import db, login_manager
+from costcalc.constants import (CUSTOMER_TYPE_MAPPING, PAYMENT_TERM_MAPPING, 
+                       CUSTOMER_IMPORTANCE_MAPPING, ESTIMATED_PURCHASE_AMOUNT_MAPPING, 
+                       REGION_PRICE_MAPPING, CUSTOMER_PROSPECT_MAPPING, 
+                       PRODUCT_RISK_MAPPING, TECHNICAL_QUALITY_REQUIREMENT_MAPPING, 
+                       CUSTOMIZATION_REQUIREMENT_MAPPING)
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -45,6 +50,26 @@ class Product(db.Model):
     finance_coef = db.Column(db.Float, default=1.5)
     tax_coef = db.Column(db.Float, default=0.0)
     profit_coef = db.Column(db.Float, default=12.0)
+    
+    # 新增字段
+    customer_type = db.Column(db.Float, nullable=False, default=1.0)
+    payment_term = db.Column(db.Float, nullable=False, default=1.0)
+    customer_importance = db.Column(db.Float, nullable=False, default=1.0)
+    estimated_purchase_amount = db.Column(db.Float, nullable=False, default=1.0)
+    region_price = db.Column(db.Float, nullable=False, default=1.0)
+    customer_prospect = db.Column(db.Float, nullable=False, default=1.0)
+    product_risk = db.Column(db.Float, nullable=False, default=1.0)
+    technical_quality_requirement = db.Column(db.Float, nullable=False, default=1.0)
+    customization_requirement = db.Column(db.Float, nullable=False, default=1.0)
+
+    @property
+    def total_cost(self):
+        total_discount = (self.customer_type * self.payment_term * self.customer_importance * 
+                          self.estimated_purchase_amount * self.region_price * 
+                          self.customer_prospect * self.product_risk * 
+                          self.technical_quality_requirement * self.customization_requirement)
+        
+        return self.post_tax_cost * total_discount
     
     @property # 原材料费
     def material_cost(self):
@@ -122,6 +147,20 @@ class Product(db.Model):
             '其他税款': self.tax_coef,
             '利润': self.profit_coef
         }
+
+    @property
+    def customization_dict(self):
+        return {
+            '客户类型': CUSTOMER_TYPE_MAPPING.get(self.customer_type, '未知类型'),
+            '支付条款': PAYMENT_TERM_MAPPING.get(self.payment_term, '未知条款'),
+            '客户重要性': CUSTOMER_IMPORTANCE_MAPPING.get(self.customer_importance, '未知重要性'),
+            '预计采购金额': ESTIMATED_PURCHASE_AMOUNT_MAPPING.get(self.estimated_purchase_amount, '未知金额'),
+            '区域价格': REGION_PRICE_MAPPING.get(self.region_price, '未知价格'),
+            '客户前景': CUSTOMER_PROSPECT_MAPPING.get(self.customer_prospect, '未知前景'),
+            '产品风险': PRODUCT_RISK_MAPPING.get(self.product_risk, '未知风险'),
+            '技术及品质要求': TECHNICAL_QUALITY_REQUIREMENT_MAPPING.get(self.technical_quality_requirement, '未知要求'),
+            '特殊定制要求': CUSTOMIZATION_REQUIREMENT_MAPPING.get(self.customization_requirement, '未知定制')
+        }
     
     @property
     def cost_dict(self):
@@ -130,7 +169,8 @@ class Product(db.Model):
             '人工费': round(self.labor_cost, 3),
             '运输费': round(self.trans_cost, 3),
             '税前': round(self.pre_tax_cost, 6),
-            '税后': round(self.post_tax_cost, 6)
+            '税后': round(self.post_tax_cost, 6),
+            '总成本': round(self.total_cost, 6)
         }
 
     def to_dict(self):

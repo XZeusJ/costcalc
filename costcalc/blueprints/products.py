@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
 from costcalc.extensions import db
 from costcalc.models import Product, ProductMaterial, ProductLabor
-from costcalc.forms import ProductForm, ProductMaterialForm, ProductLaborForm, Material
-from costcalc.utils import redirect_back
+from costcalc.forms import ProductForm, ProductMaterialForm, ProductLaborForm
+
+
 
 products_bp = Blueprint('products', __name__)
 
@@ -19,8 +20,7 @@ def manage_product():
 @products_bp.route('/product/<int:product_id>/detail')
 def detail_product(product_id):
     product = Product.query.get_or_404(product_id)
-    return render_template('products/detail_product.html', product = product)
-
+    return render_template('products/detail_product.html', product=product)
 
 @products_bp.route('/product/new', methods=['GET', 'POST'])
 def new_product():

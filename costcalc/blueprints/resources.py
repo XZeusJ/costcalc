@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, flash, redirect, url_for
 from costcalc.extensions import db
 from costcalc.models import Material, Labor
 from costcalc.forms import MaterialForm, LaborForm
-from costcalc.utils import redirect_back
 
 resources_bp = Blueprint('resources', __name__)
 

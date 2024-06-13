@@ -84,6 +84,50 @@
             </div>
         </div>
         <hr/>
+
+        <!-- 定制化字段 -->
+        <h5>定制化</h5>
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                {{ form.customer_type.label(class="form-label") }}
+                {{ form.customer_type(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.payment_term.label(class="form-label") }}
+                {{ form.payment_term(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.customer_importance.label(class="form-label") }}
+                {{ form.customer_importance(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.estimated_purchase_amount.label(class="form-label") }}
+                {{ form.estimated_purchase_amount(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.region_price.label(class="form-label") }}
+                {{ form.region_price(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.customer_prospect.label(class="form-label") }}
+                {{ form.customer_prospect(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.product_risk.label(class="form-label") }}
+                {{ form.product_risk(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.technical_quality_requirement.label(class="form-label") }}
+                {{ form.technical_quality_requirement(class="form-control") }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ form.customization_requirement.label(class="form-label") }}
+                {{ form.customization_requirement(class="form-control") }}
+            </div>
+        </div>
+     
+        <hr />
+
         <!-- 提交按钮 -->
         <div class="col text-right">
             <button type="submit" class="btn btn-primary">提交</button>
@@ -159,14 +203,15 @@
     function checkDuplicatesBeforeSubmit() {
         let values = [];
         let isDuplicate = false;
-        
-        $('select').each(function() {
-            const selectedValue = $(this).val();
-            if (values.indexOf(selectedValue) !== -1 && selectedValue !== "") {
+
+        // 检查所有 select 元素的选定值是否重复
+        $('#materialforms-container select, #laborforms-container select').each(function() {
+            const selectedText = $(this).find('option:selected').text();
+            if (values.indexOf(selectedText) !== -1 && selectedText !== "") {
                 isDuplicate = true;
                 return false; // 有重复，终止循环
             }
-            values.push(selectedValue);
+            values.push(selectedText);
         });
 
         return isDuplicate;
