@@ -1,40 +1,21 @@
 import unittest
 
-from flask import url_for
-
 from costcalc import create_app
 from costcalc.extensions import db
-from costcalc.models import User
 
 
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
-        app = create_app('testing')
-        self.context = app.test_request_context()
-        self.context.push()
-        self.client = app.test_client()
-        self.runner = app.test_cli_runner()
-
+        """Set up a blank temp database before each test"""
+        self.app = create_app('testing')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.client = self.app.test_client()
         db.create_all()
-        # user = User(nickname='Grey Li', email='test@helloflask.com')
-        # user.set_password('123')
-        # db.session.add(user)
-        # db.session.commit()
 
     def tearDown(self):
+        """Destroy blank temp database after each test"""
+        db.session.remove()
         db.drop_all()
-        self.context.pop()
-
-    # def login(self, email=None, password=None):
-    #     if email is None and password is None:
-    #         email = 'test@helloflask.com'
-    #         password = '123'
-
-    #     return self.client.post(url_for('auth.login'), data=dict(
-    #         email=email,
-    #         password=password
-    #     ), follow_redirects=True)
-
-    # def logout(self):
-    #     return self.client.get(url_for('auth.logout'), follow_redirects=True)
+        self.app_context.pop()

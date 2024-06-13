@@ -27,6 +27,7 @@ class TestingConfig(BaseConfig):
     TESTING = True
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    SERVER_NAME = 'localhost:5000'
 
 class ProductionConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, os.getenv('DATABASE_FILE', 'data-prod.db'))

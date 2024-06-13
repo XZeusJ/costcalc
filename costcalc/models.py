@@ -193,6 +193,7 @@ class Product(db.Model):
             'trans_cost': round(self.trans_cost, 3),
             'pre_tax_cost': round(self.pre_tax_cost, 6),
             'post_tax_cost': round(self.post_tax_cost, 6),
+            'total_cost': round(self.total_cost, 6),
             'materials': [pm.to_dict() for pm in self.materials],
             'labors': [pl.to_dict() for pl in self.labors]
         }

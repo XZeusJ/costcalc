@@ -60,27 +60,25 @@ def register_errors(app):
         return render_template('error.html', description=e.description, code=e.code), 400
 
 def register_commands(app):
-    @app.cli.command()
-    @click.option('--drop', is_flag=True, help='Create after drop.')
-    def initdb(drop):
-        """Initialize the database."""
-        if drop:
-            click.confirm('This operation will delete the database, do you want to continue?', abort=True)
-            db.drop_all()
-            click.echo('Drop tables.')
-        db.create_all()
-        click.echo('Initialized database.')
+    # @app.cli.command()
+    # @click.option('--drop', is_flag=True, help='Create after drop.')
+    # def initdb(drop):
+    #     """Initialize the database."""
+    #     if drop:
+    #         click.confirm('This operation will delete the database, do you want to continue?', abort=True)
+    #         db.drop_all()
+    #         click.echo('Drop tables.')
+    #     db.create_all()
+    #     click.echo('Initialized database.')
 
     @app.cli.command()
     @click.option('--material', default=20, help='Quantity of material, default is 2.')
     @click.option('--labor', default=20, help='Quantity of labor, default is 20.')
     @click.option('--product', default=20, help='Quantity of product, default is 20.')
-    @click.option('--drop', is_flag=True, help='Create after drop.')
     def forge(material, labor, product, drop):
         from costcalc.fakes import fake_materials, fake_labors, fake_products
-        if drop:
-            db.drop_all()
-            click.echo('Drop tables.')
+        db.drop_all()
+        click.echo('Drop tables.')
         db.create_all()
         click.echo('Initialized database.')
         
@@ -99,36 +97,6 @@ def register_commands(app):
         fake_products(20)
 
         click.echo('Done.')
-
-        # material_dqj = Material(name='丁晴胶', unit_price=0.022)
-        # material_bmc = Material(name='BMC', unit_price=0.025)
-        # labor_my = Labor(name='模压', deprec_cost = 7, elec_cost=21, labor_cost=30)
-        # labor_bz = Labor(name='包装', deprec_cost = 1, elec_cost=1, labor_cost=25)
-
-        # db.session.add_all([material_dqj, material_bmc, labor_my, labor_bz])
-        # db.session.commit()
-
-        # product_a = Product(name='新产品', user_id=user.id, trans_cost_kg=1)
-        # db.session.add(product_a)
-        # db.session.commit()
-
-        # product_material_dqj = ProductMaterial(product_id=product_a.id, material_id=material_dqj.id, net_weight=23, gross_weight=8,qualification_rate=0.95)
-        # product_material_bmc = ProductMaterial(product_id=product_a.id, material_id=material_bmc.id, net_weight=3, gross_weight=1,qualification_rate=0.98)
-        # product_labor_my = ProductLabor(product_id=product_a.id, labor_id=labor_my.id, process_time=120,capacity=4,qualification_rate=0.95)
-        # product_labor_bz = ProductLabor(product_id=product_a.id, labor_id=labor_bz.id, process_time=5,capacity=1,qualification_rate=1)
-
-        # db.session.add_all([product_material_dqj, product_material_bmc, product_labor_my, product_labor_bz])
-        # db.session.commit()
-
-        # product_b = Product(name='二十柱', user_id=user.id, trans_cost_kg=1)
-        # db.session.add(product_b)
-        # db.session.commit()
-
-        # product_material_bmc_b = ProductMaterial(product_id=product_b.id, material_id=material_bmc.id, net_weight=4, gross_weight=3,qualification_rate=0.98)
-        # product_labor_my_b = ProductLabor(product_id=product_b.id, labor_id=labor_my.id, process_time=360,capacity=4,qualification_rate=0.98)
-
-        # db.session.add_all([product_material_bmc_b, product_labor_my_b])
-        # db.session.commit()
 
 if __name__ == '__main__':
     app = create_app()
