@@ -72,10 +72,10 @@ def register_commands(app):
     #     click.echo('Initialized database.')
 
     @app.cli.command()
-    @click.option('--material', default=20, help='Quantity of material, default is 2.')
-    @click.option('--labor', default=20, help='Quantity of labor, default is 20.')
-    @click.option('--product', default=20, help='Quantity of product, default is 20.')
-    def forge(material, labor, product, drop):
+    @click.option('--material', default=20, help='Quantity of material, maxium is 20.')
+    @click.option('--labor', default=20, help='Quantity of labor, maxium is 20.')
+    @click.option('--product', default=20, help='Quantity of product, maxium is 20.')
+    def forge(material, labor, product):
         from costcalc.fakes import fake_materials, fake_labors, fake_products
         db.drop_all()
         click.echo('Drop tables.')
@@ -87,15 +87,12 @@ def register_commands(app):
         db.session.add(user)
         db.session.commit()
 
-        click.echo('Generating 20 materials...')
+        click.echo(f'Generating {material} materials...')
         fake_materials(material)
-
-        click.echo('Generating 20 labors...')
+        click.echo(f'Generating {labor} labors...')
         fake_labors(labor)
-
-        click.echo('Generating 20 products...')
-        fake_products(20)
-
+        click.echo(f'Generating {product} products...')
+        fake_products(product)
         click.echo('Done.')
 
 if __name__ == '__main__':

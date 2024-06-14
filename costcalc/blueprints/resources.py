@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, jsonify, request
 from costcalc.extensions import db
 from costcalc.models import Material, Labor
 from costcalc.forms import MaterialForm, LaborForm
@@ -10,9 +10,10 @@ resources_bp = Blueprint('resources', __name__)
 def manage_material():
     materials = Material.query.all()
     materials_list = [material.to_dict() for material in materials]
-    return render_template('resources/manage_material.html', materials = materials_list)
+    form = MaterialForm()
+    return render_template('resources/manage_material.html', materials = materials_list, form=form)
 
-@resources_bp.route('/material/new', methods=['GET', 'POST'])
+@resources_bp.route('/material/new', methods=['POST'])
 def new_material():
     form = MaterialForm()
     if form.validate_on_submit():
@@ -20,22 +21,19 @@ def new_material():
         form.populate_obj(material)
         db.session.add(material)
         db.session.commit()
-        flash('Material created.', 'success')
-        return redirect(url_for('resources.manage_material'))
-    return render_template('resources/new_material.html', form = form)
+        return jsonify({'status': 'success', 'message': 'Material created.', 'material': material.to_dict()})
+    return jsonify({'status': 'fail', 'message': 'Validation failed.', 'errors': form.errors}), 400
+
 
 @resources_bp.route('/material/<int:material_id>/edit', methods=['GET', 'POST'])
 def edit_material(material_id):
     material = Material.query.get_or_404(material_id)
     form = MaterialForm(obj=material)
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate_on_submit():
         form.populate_obj(material)
-        db.session.add(material)
         db.session.commit()
-        flash('Material updated.', 'success')
-        return redirect(url_for('resources.manage_material'))
-    return render_template('resources/edit_material.html', form = form)
-
+        return jsonify(status="success", message="Material updated successfully", material=material.to_dict())
+    return render_template('resources/edit_material_form.html', form=form, material_id=material_id)
 
 @resources_bp.route('/material/<int:material_id>/delete', methods=['DELETE'])
 def delete_material(material_id):

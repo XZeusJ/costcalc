@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {  
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const gridElement = document.getElementById('table');
-    const newMaterialUrl = gridElement.getAttribute('data-new-material-url');
+    const gridElement = document.getElementById('materialTable');
 
     const gridConfig = {
         columns: [
@@ -21,25 +20,47 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     const grid = new gridjs.Grid(gridConfig).render(gridElement);
-
-    insertButtonToTableHeader('+', newMaterialUrl);
-
-    function insertButtonToTableHeader(buttonText, newUrl) {
-        const gridHead = document.querySelector('.gridjs-head');
+    
+    insertAddButton();
+    function insertAddButton() {
         const gridSearch = document.querySelector('.gridjs-search');
+        const addButton = document.querySelector('.btn.btn-primary[data-bs-toggle="modal"]');
 
-        const buttonWrapper = document.createElement('div');
-        buttonWrapper.className = 'button-wrapper';
-        buttonWrapper.style.cssText = "float: left; margin-right: 1rem;";
+        if (gridSearch && addButton) {
+            const buttonWrapper = document.createElement('div');
+            buttonWrapper.className = 'button-wrapper';
+            buttonWrapper.style.cssText = "float: left; margin-right: 1rem;";
 
-        const newButton = document.createElement('a');
-        newButton.className = 'btn btn-primary';
-        newButton.href = newUrl;
-        newButton.innerText = buttonText;
-        buttonWrapper.appendChild(newButton);
-
-        gridHead.insertBefore(buttonWrapper, gridSearch);
+            // Move the existing button into the wrapper
+            buttonWrapper.appendChild(addButton);
+            gridSearch.parentNode.insertBefore(buttonWrapper, gridSearch);
+        }
     }
+
+
+    document.getElementById('newMaterialForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // 阻止表单的默认提交行为
+        const formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken  // 确保你的 CSRF token 正确传递
+            }
+        }).then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+                $('#newMaterialModal').modal('hide');  // 关闭模态框
+                const updatedData = [...grid.config.data, data.material]; // 添加新的行到表格,服务器响应包含 material
+                grid.updateConfig({
+                    data: updatedData
+                }).forceRender(); // 强制重新渲染表格
+            } else {
+                alert('Error: ' + data.message);
+            }
+        }).catch(error => console.error('Error:', error));
+    });
+    
 
     function createActionButtons(materialId) {
         return gridjs.h('div', { className: 'action-buttons' }, [
@@ -56,7 +77,46 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function editMaterial(materialId) {
-        window.location.href = `/material/${materialId}/edit`;
+        // window.location.href = `/material/${materialId}/edit`;
+        fetch(`/material/${materialId}/edit`)
+        .then(response => response.text())
+        .then(html => {
+            const modalBody = document.querySelector('#editMaterialModal .modal-body');
+            modalBody.innerHTML = html;
+            $('#editMaterialModal').modal('show');
+            initEditForm(materialId); // 初始化表单提交事件
+        });
+    }
+
+    function initEditForm(materialId) {
+        const form = document.querySelector('#editMaterialModal form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch(`/material/${materialId}/edit`, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': csrfToken }
+            }).then(response => response.json())
+              .then(data => {
+                if (data.status === 'success') {
+                    $('#editMaterialModal').modal('hide');
+                    updateGridRow(data.material);  // 更新表格行
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            });
+        });
+    }
+
+    function updateGridRow(updatedMaterial) {
+        const newData = grid.config.data.map(item => {
+            if (item.id === updatedMaterial.id) {
+                return {...item, ...updatedMaterial};
+            }
+            return item;
+        });
+        grid.updateConfig({data: newData}).forceRender();
     }
 
     function deleteMaterial(materialId, grid) {
@@ -77,4 +137,5 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
     }
+
 });

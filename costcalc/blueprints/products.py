@@ -54,12 +54,12 @@ def new_product():
         return redirect(url_for('products.detail_product', product_id = new_product.id))
     return render_template('products/new_product.html', form = form)
 
-@products_bp.route('/productmaterial/new')
+@products_bp.route('/productmaterial/newform')
 def new_pmform():
     pmform = ProductMaterialForm(prefix="pmform-__prefix__-")
     return render_template('products/_pmform.html', form = pmform)
 
-@products_bp.route('/productlabor/new')
+@products_bp.route('/productlabor/newform')
 def new_plform():
     plform = ProductLaborForm(prefix="plform-__prefix__-")
     return render_template('products/_plform.html', form = plform)
