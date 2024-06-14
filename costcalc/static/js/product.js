@@ -1,18 +1,29 @@
 document.addEventListener("DOMContentLoaded", function() {
-    console.log(data)
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const gridElement = document.getElementById('table');
     const newProductUrl = gridElement.getAttribute('data-new-product-url');
+    let grid;
 
-    const grid = new gridjs.Grid({
-        columns: getColumns(),
-        data: data,
-        search: true,
-        sort: true,
-        pagination: true,
-    }).render(gridElement);
+    fetchProducts().then(data => initializeGrid(data));
 
-    insertButtonToTableHeader('+', newProductUrl);
+    function fetchProducts() {
+        return fetch('/product/get')
+            .then(response => response.json())
+            .catch(error => console.error('Error fetching products:', error));
+    }
+
+    function initializeGrid(data) {
+        const gridConfig = {
+            columns: getColumns(),
+            data: data,
+            search: true,
+            sort: true,
+            pagination: true
+        };
+
+        grid = new gridjs.Grid(gridConfig).render(gridElement);
+        insertButtonToTableHeader('+', newProductUrl);
+    }
 
     function getColumns() {
         return [

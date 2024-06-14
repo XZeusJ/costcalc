@@ -8,10 +8,14 @@ resources_bp = Blueprint('resources', __name__)
 ## 材料表CURD
 @resources_bp.route('/material/manage')
 def manage_material():
+    form = MaterialForm()
+    return render_template('resources/manage_material.html', form=form)
+
+@resources_bp.route('/material/get')
+def get_materials():
     materials = Material.query.all()
     materials_list = [material.to_dict() for material in materials]
-    form = MaterialForm()
-    return render_template('resources/manage_material.html', materials = materials_list, form=form)
+    return jsonify(materials_list)
 
 @resources_bp.route('/material/new', methods=['POST'])
 def new_material():
@@ -45,10 +49,14 @@ def delete_material(material_id):
 ## 人工表CURD
 @resources_bp.route('/labor/manage')
 def manage_labor():
+    form = LaborForm()
+    return render_template('resources/manage_labor.html', form=form)
+
+@resources_bp.route('/labor/get')
+def get_labor():
     labors = Labor.query.all()
     labors_list = [labor.to_dict() for labor in labors]
-    form = LaborForm()
-    return render_template('resources/manage_labor.html', labors=labors_list, form=form)
+    return jsonify(labors_list)
 
 @resources_bp.route('/labor/new', methods=['POST'])
 def new_labor():

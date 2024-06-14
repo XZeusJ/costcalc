@@ -13,9 +13,13 @@ def index():
 
 @products_bp.route('/product/manage')
 def manage_product():
+    return render_template('products/manage_product.html')
+
+@products_bp.route('/product/get')
+def get_products():
     products = Product.query.all()
     products_list = [product.to_dict() for product in products]
-    return render_template('products/manage_product.html', products=products_list)
+    return jsonify(products_list)
 
 @products_bp.route('/product/<int:product_id>/detail')
 def detail_product(product_id):

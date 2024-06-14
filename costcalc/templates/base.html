@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{% block title %}CostCalc{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/mermaid.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet">
@@ -36,7 +37,7 @@
                     <a class="nav-link nav-link-custom {% if request.path == url_for('resources.manage_material') %}active{% endif %}" href="{{ url_for('resources.manage_material') }}">材料</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link nav-link-custom {% if request.path == url_for('resources.manage_labor') %}active{% endif %}" href="{{ url_for('resources.manage_labor') }}">人工</a>r
+                    <a class="nav-link nav-link-custom {% if request.path == url_for('resources.manage_labor') %}active{% endif %}" href="{{ url_for('resources.manage_labor') }}">人工</a>
                 </li>
             </ul>
         </div>

@@ -44,9 +44,5 @@
 
 {% block scripts %}
   {{ super() }}
-  <script>
-    // 将 materials 数据转换为 JSON 并嵌入到 JavaScript 变量中
-    let data = {{ materials | tojson | safe }};
-  </script>
   <script src="{{ url_for('static', filename='js/material.js') }}"></script>
 {% endblock %}
