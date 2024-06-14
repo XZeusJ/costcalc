@@ -9,7 +9,7 @@ from costcalc.blueprints.auth import auth_bp
 from costcalc.blueprints.products import products_bp
 from costcalc.blueprints.resources import resources_bp
 from costcalc.extensions import db, login_manager, csrf, bootstrap
-from costcalc.models import User, Product, Material, Labor, ProductMaterial, ProductLabor
+from costcalc.models import User
 from costcalc.settings import config
 
 
