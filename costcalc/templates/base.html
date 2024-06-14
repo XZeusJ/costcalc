@@ -30,13 +30,13 @@
             <!-- <h5>导航栏</h5> -->
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link nav-link-custom" href="{{ url_for('products.manage_product') }}">产品</a>
+                    <a class="nav-link nav-link-custom {% if request.path == url_for('products.manage_product') %}active{% endif %}" href="{{ url_for('products.manage_product') }}">产品</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link nav-link-custom" href="{{ url_for('resources.manage_material') }}">材料</a>
+                    <a class="nav-link nav-link-custom {% if request.path == url_for('resources.manage_material') %}active{% endif %}" href="{{ url_for('resources.manage_material') }}">材料</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link nav-link-custom" href="{{ url_for('resources.manage_labor') }}">人工</a>
+                    <a class="nav-link nav-link-custom {% if request.path == url_for('resources.manage_labor') %}active{% endif %}" href="{{ url_for('resources.manage_labor') }}">人工</a>r
                 </li>
             </ul>
         </div>

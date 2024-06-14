@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function createActionButtons(productId) {
-        return gridjs.h('div', { className: 'action-buttons' }, [
+        return gridjs.h('div', { className: 'action-buttons d-flex' }, [
             createButton('详情', 'btn-info', `/product/${productId}/detail`),
             createButton('编辑', 'btn-primary', `/product/${productId}/edit`),
             createDeleteButton(productId)
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function createButton(label, className, href) {
         return gridjs.h('button', {
-            className: `border rounded-md ${className}`,
+            className: ` me-1 ${className}`,
             onClick: () => { window.location.href = href; }
         }, label);
     }

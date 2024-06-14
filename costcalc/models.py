@@ -188,12 +188,12 @@ class Product(db.Model):
             'finance_coef': self.finance_coef,
             'tax_coef': self.tax_coef,
             'profit_coef': self.profit_coef,
-            'material_cost': round(self.material_cost, 3),
-            'labor_cost': round(self.labor_cost, 3),
-            'trans_cost': round(self.trans_cost, 3),
-            'pre_tax_cost': round(self.pre_tax_cost, 6),
-            'post_tax_cost': round(self.post_tax_cost, 6),
-            'total_cost': round(self.total_cost, 6),
+            'material_cost': round(self.material_cost, 1),
+            'labor_cost': round(self.labor_cost, 1),
+            'trans_cost': round(self.trans_cost, 1),
+            'pre_tax_cost': round(self.pre_tax_cost, 1),
+            'post_tax_cost': round(self.post_tax_cost, 1),
+            'total_cost': round(self.total_cost, 3),
             'materials': [pm.to_dict() for pm in self.materials],
             'labors': [pl.to_dict() for pl in self.labors]
         }

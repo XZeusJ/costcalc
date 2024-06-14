@@ -10,9 +10,12 @@ body {
     display: flex;
 }
 .sidebar {
-    width: 200px;
     background-color: #f8f9fa;
     padding: 20px;
+}
+.nav-link.active {
+    background-color: #007bff;
+    color: #ffffff;
 }
 .content {
     flex: 1;
