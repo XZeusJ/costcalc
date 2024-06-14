@@ -1,22 +1,21 @@
-<div class="form-row align-items-center mb-3 position-relative">
-    <div class="form-group col-md-3">
+<div class="row align-items-center mb-3 position-relative">
+    <div class="col-md-3">
         {{ form.labor_choices.label(class="form-label") }}
         {{ form.labor_choices(class="form-control") }}
     </div>
-    <div class="form-group col-md-2">
+    <div class="col-md-2">
         {{ form.process_time.label(class="form-label") }}
         {{ form.process_time(class="form-control") }}
     </div>
-    <div class="form-group col-md-2">
+    <div class="col-md-2">
         {{ form.capacity.label(class="form-label") }}
         {{ form.capacity(class="form-control") }}
     </div>
-    <div class="form-group col-md-2">
+    <div class="col-md-2">
         {{ form.qualification_rate.label(class="form-label") }}
         {{ form.qualification_rate(class="form-control") }}
     </div>
-    <div class="form-group col-md-2">
-        <button type="button" class="btn btn-danger btn-sm position-absolute"  onclick="removeForm(this)">-</button>
+    <div class="col-md-2">
+        <button type="button" class="btn btn-danger btn-sm position-absolute" onclick="removeForm(this)">-</button>
     </div>
 </div>
-

@@ -43,20 +43,25 @@
 
         <!-- Main Content -->
         <div class="content">
-            {% for message in get_flashed_messages(with_categories=True) %}
-                <div class="alert alert-{{ message[0] }}" role="alert">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    {{ message[1] }}
-                </div>
-            {% endfor %}
+            <!-- Flash messages container -->
+            <div id="flash-messages">
+                {% for message in get_flashed_messages(with_categories=True) %}
+                    <div class="alert alert-{{ message[0] }}" role="alert">
+                        <button type="button" class="btn-close" style="float: right" data-bs-dismiss="alert"></button>
+                        {{ message[1] }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Page content -->
             {% block content %}{% endblock %}
         </div>
     </div>
 
     {% block scripts %}
         <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
-        <!-- <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script> -->
-        <!-- <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script> -->
+        <!-- <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script> -->
         <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
         <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>

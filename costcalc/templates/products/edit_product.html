@@ -8,8 +8,8 @@
         {{ form.hidden_tag() }}
         
         <!-- 产品信息表单字段 -->
-        <div class="form-row">
-            <div class="form-group col-md-3">
+        <div class="row mb-3">
+            <div class="col-md-3">
                 {{ form.name.label(class="form-label") }}
                 {{ form.name(class="form-control") }}
             </div>
@@ -23,25 +23,25 @@
         </div>
         <div id="materialforms-container">
             {% for pmform in pmforms %}
-            <div class="form-row align-items-center mb-3 position-relative" data-material-id="{{ pmform.materialID.data }}">
-                <div class="form-group col-md-3">
+            <div class="row align-items-center mb-3 position-relative" data-material-id="{{ pmform.materialID.data }}">
+                <div class="col-md-3">
                     {{ pmform.material_name.label(class="form-label") }}
                     {{ pmform.material_name(class="form-control") }}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="col-md-2">
                     {{ pmform.net_weight.label(class="form-label") }}
                     {{ pmform.net_weight(class="form-control") }}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="col-md-2">
                     {{ pmform.gross_weight.label(class="form-label") }}
                     {{ pmform.gross_weight(class="form-control") }}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="col-md-2">
                     {{ pmform.qualification_rate.label(class="form-label") }}
                     {{ pmform.qualification_rate(class="form-control") }}
                 </div>
-                <div class="form-group col-md-2">
-                    <button type="button" class="btn btn-danger btn-sm position-absolute"  onclick="removeForm(this)">-</button>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute" onclick="removeForm(this)">-</button>
                 </div>
             </div>
             {% endfor %}
@@ -55,25 +55,25 @@
         </div>
         <div id="laborforms-container">
             {% for plform in plforms %}
-            <div class="form-row align-items-center mb-3 position-relative" data-labor-id="{{ plform.laborID.data }}">
-                <div class="form-group col-md-3">
+            <div class="row align-items-center mb-3 position-relative" data-labor-id="{{ plform.laborID.data }}">
+                <div class="col-md-3">
                     {{ plform.labor_name.label(class="form-label") }}
                     {{ plform.labor_name(class="form-control") }}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="col-md-2">
                     {{ plform.process_time.label(class="form-label") }}
                     {{ plform.process_time(class="form-control") }}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="col-md-2">
                     {{ plform.capacity.label(class="form-label") }}
                     {{ plform.capacity(class="form-control") }}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="col-md-2">
                     {{ plform.qualification_rate.label(class="form-label") }}
                     {{ plform.qualification_rate(class="form-control") }}
                 </div>
-                <div class="form-group col-md-2">
-                    <button type="button" class="btn btn-danger btn-sm position-absolute"  onclick="removeForm(this)">-</button>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute" onclick="removeForm(this)">-</button>
                 </div>
             </div>
             {% endfor %}
@@ -82,75 +82,73 @@
         
         <!-- 运输费 -->
         <h5>运输</h5>
-        <div class="form-row">
-            <div class="form-group col-md-3">
+        <div class="row mb-3">
+            <div class="col-md-3">
                 {{ form.trans_method.label(class="form-label") }}
                 {{ form.trans_method(class="form-control") }}
             </div>
-            <div class="form-group col-md-3">
+            <div class="col-md-3">
                 {{ form.trans_dest.label(class="form-label") }}
                 {{ form.trans_dest(class="form-control") }}
             </div>
-            <div class="form-group col-md-3">
+            <div class="col-md-3">
                 {{ form.trans_cost_kg.label(class="form-label") }}
                 {{ form.trans_cost_kg(class="form-control") }}
             </div>
-            
         </div>
         <hr/>
 
         <!-- 定制化字段 -->
         <h5>定制化</h5>
-        <div class="form-row">
-            <div class="form-group col-md-2">
+        <div class="row mb-3">
+            <div class="col-md-2">
                 {{ form.customer_type.label(class="form-label") }}
                 {{ form.customer_type(class="form-control") }}
             </div>
-            <div class="form-group col-md-2">
+            <div class="col-md-2">
                 {{ form.payment_term.label(class="form-label") }}
                 {{ form.payment_term(class="form-control") }}
             </div>
-            <div class="form-group col-md-2">
+            <div class="col-md-2">
                 {{ form.customer_importance.label(class="form-label") }}
                 {{ form.customer_importance(class="form-control") }}
             </div>
-            <div class="form-group col-md-2">
+            <div class="col-md-2">
                 {{ form.estimated_purchase_amount.label(class="form-label") }}
                 {{ form.estimated_purchase_amount(class="form-control") }}
             </div>
-            <div class="form-group col-md-2">
+            <div class="col-md-2">
                 {{ form.region_price.label(class="form-label") }}
                 {{ form.region_price(class="form-control") }}
             </div>
-            <div class="form-group col-md-2">
+            <div class="col-md-2">
                 {{ form.customer_prospect.label(class="form-label") }}
                 {{ form.customer_prospect(class="form-control") }}
             </div>
-            <div class="form-group col-md-2">
+            <div class="col-md-2">
                 {{ form.product_risk.label(class="form-label") }}
                 {{ form.product_risk(class="form-control") }}
             </div>
-            <div class="form-group col-md-2">
+            <div class="col-md-2">
                 {{ form.technical_quality_requirement.label(class="form-label") }}
                 {{ form.technical_quality_requirement(class="form-control") }}
             </div>
-            <div class="form-group col-md-2">
+            <div class="col-md-2">
                 {{ form.customization_requirement.label(class="form-label") }}
                 {{ form.customization_requirement(class="form-control") }}
             </div>
         </div>
-     
         <hr />
 
-
         <!-- 提交按钮 -->
-        <div class="form-row">
-            <div class="col text-right">
+        <div class="row">
+            <div class="col text-end">
                 <button type="submit" class="btn btn-primary">提交</button>
             </div>
         </div>
     </form>
 </div>
+
 {% endblock %}
 
 {% block scripts %}

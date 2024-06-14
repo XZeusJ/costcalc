@@ -1,15 +1,48 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form %}
 
-{% block content%}
-    <div id="table" data-new-labor-url="{{ url_for('resources.new_labor') }}"></div>
-{% endblock %}
+{% block content %}
+<div class="container">
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newLaborModal">添加新人工</button>
+  <div id="laborTable"></div> <!-- 人工表格将在这里渲染 -->
 
+  <!-- newLaborModal -->
+  <div class="modal fade" id="newLaborModal" tabindex="-1" aria-labelledby="newLaborModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="newLaborModalLabel">新人工</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  {{ render_form(form, action=url_for('resources.new_labor'), method='post', id='newLaborForm') }}
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Edit Labor Modal -->
+  <div class="modal fade" id="editLaborModal" tabindex="-1" aria-labelledby="editLaborModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editLaborModalLabel">编辑人工</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- 表单将被动态加载到这里 -->
+            </div>
+        </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
 
 {% block scripts %}
   {{ super() }}
   <script>
-    // 将 materials 数据转换为 JSON 并嵌入到 JavaScript 变量中
+    // 将 labors 数据转换为 JSON 并嵌入到 JavaScript 变量中
     let data = {{ labors | tojson | safe }};
   </script>
   <script src="{{ url_for('static', filename='js/labor.js') }}"></script>

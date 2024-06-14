@@ -20,22 +20,6 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     const grid = new gridjs.Grid(gridConfig).render(gridElement);
-    
-    insertAddButton();
-    function insertAddButton() {
-        const gridSearch = document.querySelector('.gridjs-search');
-        const addButton = document.querySelector('.btn.btn-primary[data-bs-toggle="modal"]');
-
-        if (gridSearch && addButton) {
-            const buttonWrapper = document.createElement('div');
-            buttonWrapper.className = 'button-wrapper';
-            buttonWrapper.style.cssText = "float: left; margin-right: 1rem;";
-
-            // Move the existing button into the wrapper
-            buttonWrapper.appendChild(addButton);
-            gridSearch.parentNode.insertBefore(buttonWrapper, gridSearch);
-        }
-    }
 
 
     document.getElementById('newMaterialForm').addEventListener('submit', function(event) {
@@ -77,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function editMaterial(materialId) {
-        // window.location.href = `/material/${materialId}/edit`;
         fetch(`/material/${materialId}/edit`)
         .then(response => response.text())
         .then(html => {
@@ -127,7 +110,6 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .then(response => {
                 if (response.ok) {
-                    alert('Material deleted successfully.');
                     // Optionally, refresh the grid or remove the row
                     const updatedData = grid.config.data.filter(item => item.id !== materialId);
                     grid.updateConfig({ data: updatedData }).forceRender();
