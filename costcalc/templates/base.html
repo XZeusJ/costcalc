@@ -71,7 +71,7 @@
         <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
         <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
-        
+        <script>const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');</script>
     {% endblock %}
 </body>
 </html>

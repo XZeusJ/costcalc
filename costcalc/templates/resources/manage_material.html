@@ -6,20 +6,7 @@
   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMaterialModal">添加新材料</button>
   <div id="materialTable"></div> <!-- 材料表格将在这里渲染 -->
   
-    <!-- newMaterialModal -->
-    <div class="modal fade" id="newMaterialModal" tabindex="-1" aria-labelledby="newMaterialModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="newMaterialModalLabel">新材料</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {{ render_form(form, action=url_for('resources.new_material'), method='post', id='newMaterialForm') }}
-                </div>
-            </div>
-        </div>
-    </div>
+ {% include 'resources/_material_form_modal.html' %}
 
     <!-- Edit Material Modal -->
     <div class="modal fade" id="editMaterialModal" tabindex="-1" aria-labelledby="editMaterialModalLabel" aria-hidden="true">
@@ -35,7 +22,6 @@
           </div>
       </div>
     </div>
-  
   
 </div>
 

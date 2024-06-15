@@ -19,7 +19,10 @@
         <!-- 动态材料表单 -->
         <div class="d-flex justify-content-between align-items-center my-3">
             <h5 class="mb-0">材料</h5>
-            <button type="button" class="btn btn-primary btn-sm" id="add-material-btn">+</button>
+            <div>   
+                <button type="button" class="btn btn-primary btn-sm" id="add-new-material-btn">+新材料</button>
+                <button type="button" class="btn btn-primary btn-sm" id="add-material-btn">+已有材料</button>
+            </div>
         </div>
         <div id="materialforms-container">
             {% for pmform in pmforms %}
@@ -51,7 +54,10 @@
         <!-- 动态人工表单 -->
         <div class="d-flex justify-content-between align-items-center my-3">
             <h5 class="mb-0">人工</h5>
-            <button type="button" class="btn btn-primary btn-sm" id="add-labor-btn">+</button>
+            <div>
+                <button type="button" class="btn btn-primary btn-sm" id="add-new-labor-btn">+新人工</button>
+                <button type="button" class="btn btn-primary btn-sm" id="add-labor-btn">+已有人工</button>
+            </div>
         </div>
         <div id="laborforms-container">
             {% for plform in plforms %}
@@ -149,6 +155,9 @@
     </form>
 </div>
 
+{% include 'resources/_material_form_modal.html' %}
+{% include 'resources/_labor_form_modal.html' %}
+
 {% endblock %}
 
 {% block scripts %}
@@ -164,7 +173,6 @@
     };
 
     function addForm(type) {
-        // 确定使用哪个URL
         const url = type === 'material' ? new_productmaterialform_url : new_productlaborform_url;
         const container = document.getElementById(`${type}forms-container`);
 
@@ -234,6 +242,66 @@
             formRow.remove();
         }
     }
+
+    document.getElementById('add-new-material-btn').addEventListener('click', function() {
+        $('#newMaterialModal').modal('show');
+    });
+
+    document.getElementById('newMaterialForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        submitForm(this, this.action).then(data => {
+            if (data.status === 'success') {
+                $('#newMaterialModal').modal('hide');
+                alert('新材料添加成功');
+                addMaterialToSelect2(data.new_material); 
+            } else {
+                alert('错误: ' + data.message);
+            }
+        });
+    });
+
+    document.getElementById('add-new-labor-btn').addEventListener('click', function() {
+        $('#newLaborModal').modal('show');
+    });
+
+    document.getElementById('newLaborForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        submitForm(this, this.action).then(data => {
+            if (data.status === 'success') {
+                $('#newLaborModal').modal('hide');
+                alert('新人工添加成功');
+                addLaborToSelect2(data.new_labor);
+            } else {
+                alert('错误: ' + data.message);
+            }
+        });
+    });
+
+    function submitForm(form, url) {
+        const formData = new FormData(form);
+        return fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-CSRFToken': csrfToken }
+        }).then(response => response.json());
+    }
+
+    function addMaterialToSelect2(material) {
+        $('select[id*="material_choices"]').each(function() {
+            var $select = $(this);
+            var newOption = new Option(material.name, material.id, false, false);
+            $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
+        });
+    }
+
+    function addLaborToSelect2(labor) {
+        $('select[id*="labor_choices"]').each(function() {
+            var $select = $(this);
+            var newOption = new Option(labor.name, labor.id, false, false);
+            $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
+        });
+    }
+
 
     function getDeleteUrl(productId, materialId, laborId) {
         if (materialId) {

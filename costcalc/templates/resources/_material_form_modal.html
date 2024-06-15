@@ -1,0 +1,14 @@
+<!-- 添加新材料的模态框 -->
+<div class="modal fade" id="newMaterialModal" tabindex="-1" aria-labelledby="newMaterialModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newMaterialModalLabel">新材料</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ render_form(material_form, action=url_for('resources.new_material'), method='post', id='newMaterialForm') }}
+            </div>
+        </div>
+    </div>
+</div>

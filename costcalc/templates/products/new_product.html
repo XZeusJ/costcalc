@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
 
 {% block content %}
 <div class="container">
@@ -27,6 +28,7 @@
         </div>
         <div id="materialforms-container"></div>
         <hr/>
+
 
         <!-- 动态人工表单 -->
         <div class="d-flex justify-content-between align-items-center my-3">
@@ -142,6 +144,9 @@
     </form>
 </div>
 
+{% include 'resources/_material_form_modal.html' %}
+{% include 'resources/_labor_form_modal.html' %}
+
 {% endblock %}
 
 
@@ -157,8 +162,8 @@
         labor: 0
     };
 
+    // 添加已有的材料/人工表单
     function addForm(type) {
-        // 确定使用哪个URL
         const url = type === 'material' ? new_productmaterialform_url : new_productlaborform_url;
         const container = document.getElementById(`${type}forms-container`);
 
@@ -202,6 +207,65 @@
     document.getElementById('add-labor-btn').addEventListener('click', function() {
         addForm('labor');
     });
+
+    document.getElementById('add-new-material-btn').addEventListener('click', function() {
+        $('#newMaterialModal').modal('show');
+    });
+
+    document.getElementById('newMaterialForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        submitForm(this, this.action).then(data => {
+            if (data.status === 'success') {
+                $('#newMaterialModal').modal('hide');
+                alert('新材料添加成功');
+                addMaterialToSelect2(data.new_material); 
+            } else {
+                alert('错误: ' + data.message);
+            }
+        });
+    });
+
+    document.getElementById('add-new-labor-btn').addEventListener('click', function() {
+        $('#newLaborModal').modal('show');
+    });
+
+    document.getElementById('newLaborForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        submitForm(this, this.action).then(data => {
+            if (data.status === 'success') {
+                $('#newLaborModal').modal('hide');
+                alert('新人工添加成功');
+                addLaborToSelect2(data.new_labor);
+            } else {
+                alert('错误: ' + data.message);
+            }
+        });
+    });
+
+    function submitForm(form, url) {
+        const formData = new FormData(form);
+        return fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-CSRFToken': csrfToken }
+        }).then(response => response.json());
+    }
+
+    function addMaterialToSelect2(material) {
+        $('select[id*="material_choices"]').each(function() {
+            var $select = $(this);
+            var newOption = new Option(material.name, material.id, false, false);
+            $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
+        });
+    }
+
+    function addLaborToSelect2(labor) {
+        $('select[id*="labor_choices"]').each(function() {
+            var $select = $(this);
+            var newOption = new Option(labor.name, labor.id, false, false);
+            $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
+        });
+    }
 
     function removeForm(button) {
         button.closest('.row').remove();

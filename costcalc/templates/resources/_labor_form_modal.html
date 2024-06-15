@@ -1,0 +1,14 @@
+<!-- 添加新人工的模态框 -->
+<div class="modal fade" id="newLaborModal" tabindex="-1" aria-labelledby="newLaborModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newLaborModalLabel">新人工</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ render_form(labor_form, action=url_for('resources.new_labor'), method='post', id='newLaborForm') }}
+            </div>
+        </div>
+    </div>
+</div>

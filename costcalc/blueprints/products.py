@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, flash, redirect, url_for, request,
 from flask_login import login_required, current_user   
 from costcalc.extensions import db
 from costcalc.models import Product, ProductMaterial, ProductLabor
-from costcalc.forms import ProductForm, ProductMaterialForm, ProductLaborForm
+from costcalc.forms import ProductForm, ProductMaterialForm, ProductLaborForm, MaterialForm, LaborForm 
 from costcalc.decorators import admin_required, sales_required, check_permission
 
 
@@ -41,7 +41,8 @@ def detail_product(product_id):
 @login_required
 def new_product():
     form = ProductForm()
-    
+    material_form = MaterialForm()
+    labor_form = LaborForm()
     if form.validate_on_submit():
         new_product = Product(user_id=current_user.id)
         form.populate_obj(new_product)
@@ -51,24 +52,24 @@ def new_product():
         for key in request.form:
             if key.startswith('pmform-') and key.endswith('-material_choices'):
                 suffix = key.split('-')[1]
-                material_form = ProductMaterialForm(prefix=f"pmform-{suffix}-")
-                material = ProductMaterial(product_id=new_product.id, material_id = material_form.material_choices.data)
-                material_form.populate_obj(material)
-                db.session.add(material)
+                pmform = ProductMaterialForm(prefix=f"pmform-{suffix}-")
+                pm = ProductMaterial(product_id=new_product.id, material_id = pmform.material_choices.data)
+                pmform.populate_obj(pm)
+                db.session.add(pm)
 
         # 处理动态添加的ProductLaborForms
         for key in request.form:
             if key.startswith('plform-') and key.endswith('-labor_choices'):
                 suffix = key.split('-')[1]
-                labor_form = ProductLaborForm(prefix=f"plform-{suffix}-")
-                labor = ProductLabor(product_id=new_product.id, labor_id = labor_form.labor_choices.data)
-                labor_form.populate_obj(labor)
-                db.session.add(labor)
+                plform = ProductLaborForm(prefix=f"plform-{suffix}-")
+                pl = ProductLabor(product_id=new_product.id, labor_id = plform.labor_choices.data)
+                plform.populate_obj(pl)
+                db.session.add(pl)
 
         db.session.commit()
         flash('Product created.', 'success')
         return redirect(url_for('products.detail_product', product_id = new_product.id))
-    return render_template('products/new_product.html', form = form)
+    return render_template('products/new_product.html', form = form, material_form = material_form, labor_form = labor_form)
 
 @products_bp.route('/productmaterial/newform')
 @login_required
@@ -91,6 +92,8 @@ def edit_product(product_id):
         flash('You do not have permission to edit this product.', 'danger')
         return redirect(url_for('products.index'))
     form = ProductForm(obj=product)
+    materail_form = MaterialForm()
+    labor_form = LaborForm()
 
     pms = ProductMaterial.query.filter_by(product_id=product_id).all()
     pmforms = []
@@ -120,24 +123,24 @@ def edit_product(product_id):
         for key in request.form:
             if key.startswith('pmform-') and key.endswith('-material_choices'):
                 suffix = key.split('-')[1]
-                material_form = ProductMaterialForm(prefix=f"pmform-{suffix}-")
-                material = ProductMaterial(product_id=product_id, material_id = material_form.material_choices.data)
-                material_form.populate_obj(material)
+                product_material_form = ProductMaterialForm(prefix=f"pmform-{suffix}-")
+                material = ProductMaterial(product_id=product_id, material_id = product_material_form.material_choices.data)
+                product_material_form.populate_obj(material)
                 db.session.add(material)
 
         for key in request.form:
             if key.startswith('plform-') and key.endswith('-labor_choices'):
                 suffix = key.split('-')[1]
-                labor_form = ProductLaborForm(prefix=f"plform-{suffix}-")
-                labor = ProductLabor(product_id=product_id, labor_id = labor_form.labor_choices.data)
-                labor_form.populate_obj(labor)
+                product_labor_form = ProductLaborForm(prefix=f"plform-{suffix}-")
+                labor = ProductLabor(product_id=product_id, labor_id = product_labor_form.labor_choices.data)
+                product_labor_form.populate_obj(labor)
                 db.session.add(labor)
 
         db.session.commit()
         flash('Product updated.', 'success')
         return redirect(url_for('products.detail_product', product_id = product_id))
     
-    return render_template('products/edit_product.html', form=form, pmforms=pmforms, plforms=plforms, product=product)
+    return render_template('products/edit_product.html', form=form, pmforms=pmforms, plforms=plforms, product=product, material_form=materail_form, labor_form=labor_form)
 
 @products_bp.route('/product/<int:product_id>/delete', methods=['DELETE'])
 @login_required
