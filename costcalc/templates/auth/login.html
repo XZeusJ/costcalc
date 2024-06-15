@@ -1,20 +1,37 @@
 {% extends 'base.html' %}
 
-{% block content%}
-<h1>登陆</h1>
+{% block content %}
+<h1>登录</h1>
 <a href="{{ url_for('auth.register') }}">注册</a>
 
-<form method="POST" action="{{ url_for('auth.login') }}">
+<form id="loginForm" method="POST" action="{{ url_for('auth.login') }}">
   {{ form.hidden_tag() }}
   <p>
     {{ form.username.label }}<br>
-    {{ form.username(size=32) }}<br>
+    {{ form.username(size=32, id="username") }}<br>
   </p>
   <p>
     {{ form.password.label }}<br>
-    {{ form.password(size=32) }}<br>
+    {{ form.password(size=32, id="password") }}<br>
   </p>
   <p>{{ form.submit() }}</p>
 </form>
+
+<button onclick="loginAsAdmin()">管理员</button>
+<button onclick="loginAsSales()">业务员</button>
+
+<script>
+function loginAsAdmin() {
+    document.getElementById('username').value = 'xzj';
+    document.getElementById('password').value = '123';
+    document.getElementById('loginForm').submit();
+}
+
+function loginAsSales() {
+    document.getElementById('username').value = 'cxj';
+    document.getElementById('password').value = '123';
+    document.getElementById('loginForm').submit();
+}
+</script>
 
 {% endblock %}

@@ -12,7 +12,9 @@
         <tr>
             <th>材料名称</th>
             <th>材料规格</th>
+            {% if current_user.role == 'admin' %}
             <th>单价/g</th>
+            {% endif %}
             <th>材料净重</th>
             <th>材料毛边</th>
             <th>材料毛重</th>
@@ -25,7 +27,9 @@
         <tr>
             <td>{{ material.get('材料名称') }}</td>
             <td>{{ material.get('材料规格') }}</td>
+            {% if current_user.role == 'admin' %}
             <td>{{ material.get('单价/g') }}</td>
+            {% endif %}
             <td>{{ material.get('材料净重') }}</td>
             <td>{{ material.get('材料毛边') }}</td>
             <td>{{ material.get('材料毛重') }}</td>
@@ -36,7 +40,11 @@
     </tbody>
     <tfoot>
         <tr>
+            {% if current_user.role == 'admin' %}
             <td colspan="7"></td>
+            {% else %}
+            <td colspan="6"></td>
+            {% endif %}
             <td>{{ product.cost_dict.get('材料费') }}</td>
         </tr>
     </tfoot>

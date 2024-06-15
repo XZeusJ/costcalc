@@ -43,7 +43,7 @@ def new_product():
     form = ProductForm()
     
     if form.validate_on_submit():
-        new_product = Product(user_id = 1)
+        new_product = Product(user_id=current_user.id)
         form.populate_obj(new_product)
         db.session.add(new_product)
         
