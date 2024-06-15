@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
             { id: 'trans_cost', name: '运输费' },
             { id: 'post_tax_cost', name: '税后' },
             { id: 'total_cost', name: '总成本' },
+            { id: 'user_name', name: '负责人' },
             {
                 name: '操作',
                 formatter: (_, row) => createActionButtons(row.cells[0].data)

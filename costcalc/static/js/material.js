@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 { id: 'name', name: '材料名称' },
                 { id: 'spec', name: '材料规格' },
                 { id: 'unit_price', name: '单价/g' },
+                { id: 'user_name', name: '负责人' },
                 {
                     name: '操作',
                     formatter: (_, row) => createActionButtons(row.cells[0].data)

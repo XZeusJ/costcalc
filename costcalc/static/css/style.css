@@ -22,6 +22,14 @@ body {
     padding: 20px;
 }
 
+.nav-item {
+    display: flex; /* Flexbox to keep items inline */
+}
+
+.nav-link {
+    margin-right: 10px; /* Add some space between the links */
+}
+
 /* 导航栏样式 */
 .nav-link-custom {
     display: block;

@@ -2,10 +2,36 @@ from faker import Faker
 import random
 from sqlalchemy.exc import IntegrityError
 from costcalc.extensions import db
-from costcalc.models import Material, Labor, Product, ProductMaterial, ProductLabor
+from costcalc.models import User, Material, Labor, Product, ProductMaterial, ProductLabor
 
 
 fake = Faker('zh_CN')
+
+user_count = 0
+def fake_users():
+    global user_count
+    admin = User(username='xzj')
+    admin.set_password('123')
+    admin.role = 'admin'
+    db.session.add(admin)
+
+    admin = User(username='hym')
+    admin.set_password('123')
+    admin.role = 'admin'
+    db.session.add(admin)
+
+    sale = User(username='cxj')
+    sale.set_password('123')
+    sale.role = 'sales'
+    db.session.add(sale)
+
+    sale = User(username='lxp')
+    sale.set_password('123')
+    sale.role = 'sales'
+    db.session.add(sale)
+
+    db.session.commit()
+    user_count += 4
 
 # 材料名称词汇表
 material_names = [
@@ -28,6 +54,7 @@ def fake_materials(count=20):
     for i in range(count):
         material = Material(
             name=material_names[i],
+            user_id=random.randint(1, user_count),
             spec=f'{random.randint(10, 100)}厘米', 
             unit_price=fake.random_number(digits=2)
         )
@@ -41,6 +68,7 @@ def fake_labors(count=20):
     for i in range(count):
         labor = Labor(
             name=labor_names[i],
+            user_id=random.randint(1, user_count),
             deprec_cost=fake.random_number(digits=2),
             elec_cost=fake.random_number(digits=2),
             labor_cost=fake.random_number(digits=2)
@@ -75,7 +103,7 @@ def fake_products(count=20):
     for i in range(count):
         product = Product(
             name=product_names[i],
-            user_id=1,  # Assuming the user with ID 1 is already created
+            user_id = (i % user_count) + 1,
             trans_method=fake.word(),
             trans_dest=fake.city(),
             trans_cost_kg=fake.random_number(digits=2),

@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function initializeGrid(data) {
+
         const gridConfig = {
             columns: [
                 { id: 'id', name: 'ID' },
@@ -31,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 { id: 'deprec_cost', name: '折旧费用' },
                 { id: 'elec_cost', name: '电费' },
                 { id: 'labor_cost', name: '人工费用' },
+                { id: 'user_name', name: '负责人' },
                 {
                     name: '操作',
                     formatter: (_, row) => createActionButtons(row.cells[0].data)

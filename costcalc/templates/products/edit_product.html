@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container">
     <h3>编辑产品</h3>
-    <form method="post" action="{{ url_for('products.edit_product', product_id=product.id) }}" id="product-form">
+    <form method="post" action="{{ url_for('products.edit_product', product_id=product.id) }}" id="product-form"  data-product-id="{{ product.id }}">
         {{ form.hidden_tag() }}
         
         <!-- 产品信息表单字段 -->
@@ -211,8 +211,8 @@
     });
 
     function removeForm(button) {
-        const formRow = button.closest('.form-row');
-        const productId = {{ product.id|tojson|safe }};
+        const formRow = button.closest('.row');
+        const productId = document.getElementById('product-form').getAttribute('data-product-id');
         const materialId = formRow.getAttribute('data-material-id');
         const laborId = formRow.getAttribute('data-labor-id');
 

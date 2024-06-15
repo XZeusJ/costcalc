@@ -20,7 +20,10 @@
         <!-- 动态材料表单 -->
         <div class="d-flex justify-content-between align-items-center my-3">
             <h5 class="mb-0">材料</h5>
-            <button type="button" class="btn btn-primary btn-sm" id="add-material-btn">+</button>
+            <div>   
+                <button type="button" class="btn btn-primary btn-sm" id="add-new-material-btn">+新材料</button>
+                <button type="button" class="btn btn-primary btn-sm" id="add-material-btn">+已有材料</button>
+            </div>
         </div>
         <div id="materialforms-container"></div>
         <hr/>
@@ -28,7 +31,10 @@
         <!-- 动态人工表单 -->
         <div class="d-flex justify-content-between align-items-center my-3">
             <h5 class="mb-0">人工</h5>
-            <button type="button" class="btn btn-primary btn-sm" id="add-labor-btn">+</button>
+            <div>
+                <button type="button" class="btn btn-primary btn-sm" id="add-new-labor-btn">+新人工</button>
+                <button type="button" class="btn btn-primary btn-sm" id="add-labor-btn">+已有人工</button>
+            </div>
         </div>
         <div id="laborforms-container"></div>
         <hr />
@@ -198,7 +204,7 @@
     });
 
     function removeForm(button) {
-        button.closest('.form-row').remove();
+        button.closest('.row').remove();
     }
 
     // 新添加的检查重复函数和修改的表单提交事件

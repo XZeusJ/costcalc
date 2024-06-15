@@ -12,7 +12,10 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
+    role = db.Column(db.String(64), nullable=False)  # "admin" or "sales"
     products = db.relationship('Product', back_populates='user') # 定义关系属性
+    materials = db.relationship('Material', backref='user', lazy=True)
+    labors = db.relationship('Labor', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -178,6 +181,7 @@ class Product(db.Model):
             'id': self.id,
             'name': self.name,
             'user_id': self.user_id,
+            'user_name': self.user.username if self.user else None,  # 安全地访问用户名
             'trans_method': self.trans_method,
             'trans_dest': self.trans_dest,
             'trans_cost_kg': self.trans_cost_kg,
@@ -204,10 +208,14 @@ class Material(db.Model):
     name = db.Column(db.String(20), nullable=False)
     spec = db.Column(db.String(20))
     unit_price = db.Column(db.Float, default = 0.0)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # 添加用户外键
+
     
     def to_dict(self):
         return {
             'id': self.id,
+            'user_id': self.user_id,
+            'user_name': self.user.username if self.user else None,  # 安全地访问用户名
             'name': self.name,
             'spec': self.spec,
             'unit_price': self.unit_price
@@ -219,10 +227,13 @@ class Labor(db.Model):
     deprec_cost = db.Column(db.Float, default = 0.0)
     elec_cost = db.Column(db.Float, default = 0.0)
     labor_cost = db.Column(db.Float, default = 0.0)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # 添加用户外键
 
     def to_dict(self):
         return {
             'id': self.id,
+            'user_id': self.user_id,
+            'user_name': self.user.username if self.user else None,  # 安全地访问用户名
             'name': self.name,
             'deprec_cost': self.deprec_cost,
             'elec_cost': self.elec_cost,

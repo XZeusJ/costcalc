@@ -1,32 +1,44 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
+from flask_login import login_required, current_user   
 from costcalc.extensions import db
 from costcalc.models import Product, ProductMaterial, ProductLabor
 from costcalc.forms import ProductForm, ProductMaterialForm, ProductLaborForm
+from costcalc.decorators import admin_required, sales_required, check_permission
 
 
 
 products_bp = Blueprint('products', __name__)
 
+
 @products_bp.route('/')
+@login_required
 def index():
     return redirect(url_for('.manage_product'))
 
 @products_bp.route('/product/manage')
+@login_required
 def manage_product():
     return render_template('products/manage_product.html')
 
 @products_bp.route('/product/get')
+@login_required
 def get_products():
-    products = Product.query.all()
+    if current_user.role == 'admin':
+        products = Product.query.all()
+    else:
+        products = Product.query.filter_by(user_id=current_user.id).all()
     products_list = [product.to_dict() for product in products]
     return jsonify(products_list)
 
 @products_bp.route('/product/<int:product_id>/detail')
+@login_required
+@check_permission
 def detail_product(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('products/detail_product.html', product=product)
 
 @products_bp.route('/product/new', methods=['GET', 'POST'])
+@login_required
 def new_product():
     form = ProductForm()
     
@@ -59,18 +71,25 @@ def new_product():
     return render_template('products/new_product.html', form = form)
 
 @products_bp.route('/productmaterial/newform')
+@login_required
 def new_pmform():
     pmform = ProductMaterialForm(prefix="pmform-__prefix__-")
     return render_template('products/_pmform.html', form = pmform)
 
 @products_bp.route('/productlabor/newform')
+@login_required
 def new_plform():
     plform = ProductLaborForm(prefix="plform-__prefix__-")
     return render_template('products/_plform.html', form = plform)
 
 @products_bp.route('/product/<int:product_id>/edit', methods=['GET', 'POST'])
+@login_required
+@check_permission
 def edit_product(product_id):
     product = Product.query.get_or_404(product_id)
+    if current_user.role != 'admin' and product.user_id != current_user.id:
+        flash('You do not have permission to edit this product.', 'danger')
+        return redirect(url_for('products.index'))
     form = ProductForm(obj=product)
 
     pms = ProductMaterial.query.filter_by(product_id=product_id).all()
@@ -121,8 +140,13 @@ def edit_product(product_id):
     return render_template('products/edit_product.html', form=form, pmforms=pmforms, plforms=plforms, product=product)
 
 @products_bp.route('/product/<int:product_id>/delete', methods=['DELETE'])
+@login_required
+@check_permission
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
+    if current_user.role != 'admin' and product.user_id != current_user.id:
+        flash('You do not have permission to delete this product.', 'danger')
+        return redirect(url_for('.index'))
     product_materials = ProductMaterial.query.filter_by(product_id=product_id).all()
     product_labors = ProductLabor.query.filter_by(product_id=product_id).all()
     for pm in product_materials:
@@ -136,7 +160,13 @@ def delete_product(product_id):
     return '', 204
 
 @products_bp.route('/product/<int:product_id>/material/<int:material_id>/delete', methods=['DELETE'])
+@login_required
+@check_permission
 def delete_product_material(product_id, material_id):
+    product = Product.query.get_or_404(product_id)
+    if current_user.role != 'admin' and product.user_id != current_user.id:
+        return jsonify({'error': 'You do not have permission to delete this material'}), 403
+
     product_material = ProductMaterial.query.filter_by(product_id=product_id, material_id=material_id).first()
     if not product_material:
         return jsonify({'error': 'ProductMaterial not found'}), 404
@@ -146,7 +176,14 @@ def delete_product_material(product_id, material_id):
     return jsonify({'message': 'ProductMaterial deleted'}), 200
 
 @products_bp.route('/product/<int:product_id>/labor/<int:labor_id>/delete', methods=['DELETE'])
+@login_required
+@check_permission
 def delete_product_labor(product_id, labor_id):
+    product = Product.query.get_or_404(product_id)
+    if current_user.role != 'admin' and product.user_id != current_user.id:
+        return jsonify({'error': 'You do not have permission to delete this material'}), 403
+
+
     product_labor = ProductLabor.query.filter_by(product_id=product_id, labor_id=labor_id).first()
     if not product_labor:
         return jsonify({'error': 'ProductLabor not found'}), 404
@@ -154,3 +191,4 @@ def delete_product_labor(product_id, labor_id):
     db.session.delete(product_labor)
     db.session.commit()
     return jsonify({'message': 'ProductLabor deleted'}), 200
+

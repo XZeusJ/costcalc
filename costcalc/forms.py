@@ -1,14 +1,20 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, ValidationError, HiddenField, \
-    BooleanField, PasswordField, FloatField, SelectMultipleField, IntegerField
-from wtforms.validators import DataRequired, Length, Optional
+    BooleanField, PasswordField, FloatField, IntegerField
+from wtforms.validators import DataRequired, Length, Optional,EqualTo
 from costcalc.models import Material, Labor
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(1, 128)])
-    remember = BooleanField('Remember me')
-    submit = SubmitField('Log in')
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    role = SelectField('Role', choices=[('admin', 'Admin'), ('sales', 'Sales')], validators=[DataRequired()])
+    submit = SubmitField('Register')
 
 class MaterialForm(FlaskForm):
     name = StringField('材料名称', validators=[DataRequired(), Length(1, 20)])
