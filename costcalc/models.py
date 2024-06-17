@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import UniqueConstraint
 
 from costcalc.extensions import db, login_manager
 from costcalc.constants import (CUSTOMER_TYPE_MAPPING, PAYMENT_TERM_MAPPING, 
@@ -206,10 +207,11 @@ class Product(db.Model):
 class Material(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
-    spec = db.Column(db.String(20))
+    spec = db.Column(db.String(20), default = '')
     unit_price = db.Column(db.Float, default = 0.0)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # 添加用户外键
 
+    __table_args__ = (UniqueConstraint('name', 'spec', name='_name_spec_uc'),)
     
     def to_dict(self):
         return {

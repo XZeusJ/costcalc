@@ -6,16 +6,39 @@ document.addEventListener("DOMContentLoaded", function() {
     fetchMaterials().then(data => initializeGrid(data));
 
     document.getElementById('newMaterialForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+        event.preventDefault();  // 阻止表单默认提交行为
         submitForm(this, '/material/new').then(data => {
             if (data.status === 'success') {
-                $('#newMaterialModal').modal('hide');
-                addGridRow(data.material);
+                $('#newMaterialModal').modal('hide');  // 如果成功，隐藏模态框
+                addGridRow(data.material);  // 假设这是一个函数来更新前端的某个表格或列表
+                alert(data.message);  // 可选：给用户一个成功提示
             } else {
+                // 显示来自服务器的错误消息
                 alert('Error: ' + data.message);
             }
+        }).catch(error => {
+            // 处理网络错误或其他类型的错误
+            console.error('Error submitting form:', error);
+            alert('An error occurred while submitting the form.');
         });
     });
+    
+    function submitForm(form, url) {
+        const formData = new FormData(form);
+        return fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                // 确保你的 CSRF Token 被正确设置，根据你的服务端配置
+                'X-CSRFToken': csrfToken
+            }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        });
+    }
 
     function fetchMaterials() {
         return fetch('/material/get')
@@ -45,14 +68,6 @@ document.addEventListener("DOMContentLoaded", function() {
         grid = new gridjs.Grid(gridConfig).render(gridElement);
     }
 
-    function submitForm(form, url) {
-        const formData = new FormData(form);
-        return fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-CSRFToken': csrfToken }
-        }).then(response => response.json());
-    }
 
     function createActionButtons(materialId) {
         return gridjs.h('div', { className: 'action-buttons' }, [

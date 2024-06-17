@@ -24,8 +24,9 @@ class MaterialForm(FlaskForm):
 
 class ProductMaterialForm(FlaskForm):
     material_choices = SelectField('选择材料', coerce=int, validators=[DataRequired()])
-    material_name = StringField('材料名称', render_kw={'readonly': True})
+    spec_choices = SelectField('材料规格', coerce=int, validators=[DataRequired()])
 
+    material_name = StringField('材料名称', render_kw={'readonly': True})
     materialID = IntegerField('材料id', render_kw={'readonly': True}) #用来传递给edit_product.html
 
     net_weight = FloatField('材料净重', validators=[Optional()], default=0.0)

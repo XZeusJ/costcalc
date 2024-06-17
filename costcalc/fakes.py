@@ -7,31 +7,21 @@ from costcalc.models import User, Material, Labor, Product, ProductMaterial, Pro
 
 fake = Faker('zh_CN')
 
-user_count = 0
 def fake_users():
-    global user_count
-    admin = User(username='xzj')
-    admin.set_password('123')
-    admin.role = 'admin'
-    db.session.add(admin)
-
-    admin = User(username='hym')
-    admin.set_password('123')
-    admin.role = 'admin'
-    db.session.add(admin)
-
-    sale = User(username='cxj')
-    sale.set_password('123')
-    sale.role = 'sales'
-    db.session.add(sale)
-
-    sale = User(username='lxp')
-    sale.set_password('123')
-    sale.role = 'sales'
-    db.session.add(sale)
-
+    # 创建用户
+    users = [
+        User(username='xzj', role='admin'),
+        User(username='hym', role='admin'),
+        User(username='cxj', role='sales'),
+        User(username='lxp', role='sales')
+    ]
+    for user in users:
+        user.set_password('123')  # 假设所有用户密码设置为 '123'
+    db.session.bulk_save_objects(users)
     db.session.commit()
-    user_count += 4
+    user_count = User.query.count()  # 更新用户计数
+    print(f"Users created: {user_count}")
+
 
 # 材料名称词汇表
 material_names = [
@@ -50,21 +40,42 @@ labor_names = [
     "旋转成型", "吹塑成型", "发泡成型", "电子束固化", "自动切割"
 ]
 
-def fake_materials(count=20):
-    for i in range(count):
-        material = Material(
-            name=material_names[i],
-            user_id=random.randint(1, user_count),
-            spec=f'{random.randint(10, 100)}厘米', 
-            unit_price=fake.random_number(digits=2)
-        )
+def fake_materials(total_count=20):
+    user_count = User.query.count()  # 获取当前数据库中的用户数量
+    material_count = total_count // 2  # 由于每个名称生成两个材料，所以这里使用 total_count // 2
+    new_materials = []
+    
+    # 确保每个材料名称生成两个不同规格的材料
+    for name in material_names:
+        # 生成两个不同规格的材料
+        for _ in range(2):  # 固定生成两个实例
+            spec = f"{random.randint(10, 100)}厘米"
+            new_materials.append(Material(
+                name=name,
+                user_id=random.randint(1, user_count),
+                spec=spec,
+                unit_price=random.uniform(1.0, 100.0)
+            ))
+            if len(new_materials) >= total_count:
+                break
+        if len(new_materials) >= total_count:
+            break
+
+    # 添加到数据库并提交
+    for material in new_materials:
         db.session.add(material)
+    
     try:
         db.session.commit()
-    except IntegrityError:
+        print(f"{len(new_materials)} materials committed successfully.")
+    except IntegrityError as e:
         db.session.rollback()
+        print(f"Failed to commit materials due to IntegrityError: {str(e)}")
+
+
 
 def fake_labors(count=20):
+    user_count = User.query.count()  # 获取当前数据库中的用户数量
     for i in range(count):
         labor = Labor(
             name=labor_names[i],
@@ -97,12 +108,21 @@ product_names = [
 ]
 
 def fake_products(count=20):
+    user_count = User.query.count()  # 获取当前数据库中的用户数量
     materials = Material.query.all()
     labors = Labor.query.all()
     
+    if user_count == 0:
+        print("No users available to assign to products.")
+        return
+
+    materials = Material.query.all()
+    labors = Labor.query.all()
+    print(f"Materials available: {len(materials)}, Labors available: {len(labors)}")
+
     for i in range(count):
         product = Product(
-            name=product_names[i],
+            name=product_names[i % len(product_names)],
             user_id = (i % user_count) + 1,
             trans_method=fake.word(),
             trans_dest=fake.city(),
@@ -148,7 +168,9 @@ def fake_products(count=20):
         db.session.add(product)
     try:
         db.session.commit()
+        print("Products committed successfully.")
     except IntegrityError:
         db.session.rollback()
+        print(f"Failed to commit products: {str(e)}")
 
-        
+

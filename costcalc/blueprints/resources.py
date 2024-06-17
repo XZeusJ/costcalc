@@ -3,7 +3,8 @@ from flask_login import login_required, current_user
 from costcalc.extensions import db
 from costcalc.models import Material, Labor
 from costcalc.forms import MaterialForm, LaborForm
-from costcalc.decorators import admin_required, sales_required
+from costcalc.decorators import admin_required
+from sqlalchemy.exc import IntegrityError
 
 resources_bp = Blueprint('resources', __name__)
 
@@ -21,15 +22,28 @@ def get_materials():
     materials_list = [material.to_dict() for material in materials]
     return jsonify(materials_list)
 
+@resources_bp.route('/material/specs')
+def material_specs():
+    material_name = request.args.get('name')
+    materials = Material.query.filter_by(name=material_name).all()
+    specs = [{'id': material.id, 'spec': material.spec} for material in materials]
+    return jsonify(specs)
+
+from sqlalchemy.exc import IntegrityError
+
 @resources_bp.route('/material/new', methods=['POST'])
 def new_material():
     form = MaterialForm()
     if form.validate_on_submit():
-        material = Material(user_id = current_user.id)
+        material = Material(user_id=current_user.id)
         form.populate_obj(material)
-        db.session.add(material)
-        db.session.commit()
-        return jsonify({'status': 'success', 'message': 'Material created.', 'material': material.to_dict(), 'new_material': {'id': material.id, 'name': material.name}})
+        try:
+            db.session.add(material)
+            db.session.commit()
+            return jsonify({'status': 'success', 'message': 'Material created.', 'material': material.to_dict()})
+        except IntegrityError:
+            db.session.rollback()
+            return jsonify({'status': 'fail', 'message': '这个材料规格已经存在.'}), 409  # 409 Conflict
     return jsonify({'status': 'fail', 'message': 'Validation failed.', 'errors': form.errors}), 400
 
 

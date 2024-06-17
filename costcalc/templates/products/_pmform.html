@@ -1,7 +1,11 @@
 <div class="row align-items-center mb-3 position-relative">
-    <div class="col-md-3">
+    <div class="col-md-2">
         {{ form.material_choices.label(class="form-label") }}
         {{ form.material_choices(class="form-control") }}
+    </div>
+    <div class="col-md-2">
+        {{ form.spec_choices.label(class="form-label") }}
+        {{ form.spec_choices(class="form-control") }}
     </div>
     <div class="col-md-2">
         {{ form.net_weight.label(class="form-label") }}

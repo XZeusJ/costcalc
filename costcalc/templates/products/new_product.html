@@ -176,6 +176,7 @@
                 const newSelect = newForm.querySelector(`select[name$="-${type}_choices"]`);
                 container.appendChild(newForm);
                 initializeSelect2WithPlaceholder(newSelect, `Select a ${type}`);
+                initializeSpecLoading(newForm);
             })
             .catch(error => console.error('Error:', error));
     }
@@ -196,6 +197,29 @@
         // 打开时聚焦搜索框
         $(document).on('select2:open', () => {
             document.querySelector('.select2-search__field').focus();
+        });
+    }
+
+
+    function initializeSpecLoading(formElement) {
+        const materialNameSelect = $(formElement).find(`select[name$="-material_choices"]`);
+        const specSelect = $(formElement).find(`select[name$="-spec_choices"]`);
+
+        // Bind the change event using select2's event system
+        materialNameSelect.on('select2:select', function(e) {
+            const materialName = e.params.data.text;  // Gets the text from the selected item
+            console.log("Selected material name:", materialName);
+            fetch(`/material/specs?name=${encodeURIComponent(materialName)}`)
+                .then(response => response.json())
+                .then(specs => {
+                    let options = '';  // Clear and prepare new options
+                    specs.forEach(spec => {
+                        options += `<option value="${spec.id}">${spec.spec}</option>`;
+                    });
+                    specSelect.html(options);  // Replace existing options
+                    specSelect.select2(); // Reinitialize select2 for updated specs
+                })
+                .catch(error => console.error('Error loading specs:', error));
         });
     }
 

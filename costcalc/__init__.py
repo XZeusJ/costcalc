@@ -60,21 +60,10 @@ def register_errors(app):
         return render_template('error.html', description=e.description, code=e.code), 400
 
 def register_commands(app):
-    # @app.cli.command()
-    # @click.option('--drop', is_flag=True, help='Create after drop.')
-    # def initdb(drop):
-    #     """Initialize the database."""
-    #     if drop:
-    #         click.confirm('This operation will delete the database, do you want to continue?', abort=True)
-    #         db.drop_all()
-    #         click.echo('Drop tables.')
-    #     db.create_all()
-    #     click.echo('Initialized database.')
-
     @app.cli.command()
-    @click.option('--material', default=5, help='Quantity of material, maxium is 5.')
-    @click.option('--labor', default=5, help='Quantity of labor, maxium is 5.')
-    @click.option('--product', default=5, help='Quantity of product, maxium is 5.')
+    @click.option('--material',type=int, default=20, help='Quantity of material, maxium is 20.')
+    @click.option('--labor',type=int, default=20, help='Quantity of labor, maxium is 20.')
+    @click.option('--product',type=int, default=20, help='Quantity of product, maxium is 20.')
     def forge(material, labor, product):
         from costcalc.fakes import fake_users, fake_materials, fake_labors, fake_products
         db.drop_all()
@@ -84,8 +73,8 @@ def register_commands(app):
         
         click.echo(f'Generating users...')
         fake_users()
-        click.echo(f'Generating {material} materials...')
-        fake_materials(material)
+        click.echo(f'Generating {material * 2} materials...')
+        fake_materials(material * 2)
         click.echo(f'Generating {labor} labors...')
         fake_labors(labor)
         click.echo(f'Generating {product} products...')
