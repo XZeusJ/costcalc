@@ -5,6 +5,35 @@ document.addEventListener("DOMContentLoaded", function() {
 
     fetchMaterials().then(data => initializeGrid(data));
 
+
+    function fetchMaterials() {
+        return fetch('/material/get')
+            .then(response => response.json())
+            .catch(error => console.error('Error fetching materials:', error));
+    }
+
+    function initializeGrid(data) {
+        const gridConfig = {
+            columns: [
+                { id: 'id', name: 'ID' },
+                { id: 'name', name: '材料名称' },
+                { id: 'spec', name: '材料规格' },
+                { id: 'unit_price', name: '单价/g' },
+                { id: 'user_name', name: '负责人' },
+                {
+                    name: '操作',
+                    formatter: (_, row) => createActionButtons(row.cells[0].data)
+                }
+            ],
+            data: data,
+            search: true,
+            sort: true,
+        };
+
+        grid = new gridjs.Grid(gridConfig).render(gridElement);
+    }
+
+
     document.getElementById('newMaterialForm').addEventListener('submit', function(event) {
         event.preventDefault();  // 阻止表单默认提交行为
         submitForm(this, '/material/new').then(data => {
@@ -39,35 +68,6 @@ document.addEventListener("DOMContentLoaded", function() {
             return response.json();
         });
     }
-
-    function fetchMaterials() {
-        return fetch('/material/get')
-            .then(response => response.json())
-            .catch(error => console.error('Error fetching materials:', error));
-    }
-
-    function initializeGrid(data) {
-        const gridConfig = {
-            columns: [
-                { id: 'id', name: 'ID' },
-                { id: 'name', name: '材料名称' },
-                { id: 'spec', name: '材料规格' },
-                { id: 'unit_price', name: '单价/g' },
-                { id: 'user_name', name: '负责人' },
-                {
-                    name: '操作',
-                    formatter: (_, row) => createActionButtons(row.cells[0].data)
-                }
-            ],
-            data: data,
-            search: true,
-            sort: true,
-            pagination: true
-        };
-
-        grid = new gridjs.Grid(gridConfig).render(gridElement);
-    }
-
 
     function createActionButtons(materialId) {
         return gridjs.h('div', { className: 'action-buttons' }, [

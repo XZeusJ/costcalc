@@ -208,7 +208,6 @@
         // Bind the change event using select2's event system
         materialNameSelect.on('select2:select', function(e) {
             const materialName = e.params.data.text;  // Gets the text from the selected item
-            console.log("Selected material name:", materialName);
             fetch(`/material/specs?name=${encodeURIComponent(materialName)}`)
                 .then(response => response.json())
                 .then(specs => {
@@ -249,6 +248,16 @@
         });
     });
 
+    function addMaterialToSelect2(material) {
+        $('select[id*="material_choices"]').each(function() {
+            var $select = $(this);
+            $select.val(null).trigger('change');
+            var newOption = new Option(material.name, material.id, false, false);
+            $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
+            $select.val(material.id).trigger('select2:select');
+        });
+    }
+
     document.getElementById('add-new-labor-btn').addEventListener('click', function() {
         $('#newLaborModal').modal('show');
     });
@@ -275,13 +284,6 @@
         }).then(response => response.json());
     }
 
-    function addMaterialToSelect2(material) {
-        $('select[id*="material_choices"]').each(function() {
-            var $select = $(this);
-            var newOption = new Option(material.name, material.id, false, false);
-            $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
-        });
-    }
 
     function addLaborToSelect2(labor) {
         $('select[id*="labor_choices"]').each(function() {

@@ -53,7 +53,7 @@ def new_product():
             if key.startswith('pmform-') and key.endswith('-material_choices'):
                 suffix = key.split('-')[1]
                 pmform = ProductMaterialForm(prefix=f"pmform-{suffix}-")
-                pm = ProductMaterial(product_id=new_product.id, material_id = pmform.material_choices.data)
+                pm = ProductMaterial(product_id=new_product.id, material_id = pmform.spec_choices.data)
                 pmform.populate_obj(pm)
                 db.session.add(pm)
 

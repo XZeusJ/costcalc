@@ -17,8 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
             columns: getColumns(),
             data: data,
             search: true,
-            sort: true,
-            pagination: true
+            sort: true
         };
 
         grid = new gridjs.Grid(gridConfig).render(gridElement);

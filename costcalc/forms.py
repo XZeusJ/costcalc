@@ -3,6 +3,7 @@ from wtforms import StringField, SubmitField, SelectField, ValidationError, Hidd
     BooleanField, PasswordField, FloatField, IntegerField
 from wtforms.validators import DataRequired, Length, Optional,EqualTo
 from costcalc.models import Material, Labor
+from costcalc.extensions import db
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -35,7 +36,11 @@ class ProductMaterialForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(ProductMaterialForm, self).__init__(*args, **kwargs)
-        self.material_choices.choices = [(m.id, m.name) for m in Material.query.all()]
+        unique_materials = db.session.query(
+            Material.id, Material.name
+        ).group_by(Material.name).all()
+        
+        self.material_choices.choices = [(m.id, m.name) for m in unique_materials]
         
 class LaborForm(FlaskForm):
     name = StringField('工序', validators=[DataRequired(), Length(1, 20)])

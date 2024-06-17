@@ -41,10 +41,9 @@ document.addEventListener("DOMContentLoaded", function() {
             data: data,
             search: true,
             sort: true,
-            pagination: true
         };
 
-        grid = new gridjs.Grid(gridConfig).render(gridElement);
+        new gridjs.Grid(gridConfig).render(gridElement);
     }
 
     function submitForm(form, url) {
