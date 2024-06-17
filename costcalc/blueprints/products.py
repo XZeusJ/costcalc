@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
+from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from flask_login import login_required, current_user   
 from costcalc.extensions import db
 from costcalc.models import Product, ProductMaterial, ProductLabor
@@ -21,14 +21,20 @@ def manage_product():
     return render_template('products/manage_product.html')
 
 @products_bp.route('/product/get')
-@login_required
 def get_products():
-    if current_user.role == 'admin':
-        products = Product.query.all()
-    else:
-        products = Product.query.filter_by(user_id=current_user.id).all()
-    products_list = [product.to_dict() for product in products]
-    return jsonify(products_list)
+    try:
+        if current_user.role == 'admin':
+            products = Product.query.all()
+        else:
+            products = Product.query.filter_by(user_id=current_user.id).all()
+        
+        products_list = [product.to_dict() for product in products]
+        return jsonify(products_list)
+    except Exception as e:
+        # 记录错误信息到日志文件中，方便调试
+        current_app.logger.error(f'Error fetching products: {e}')
+        # 返回一个错误信息给前端
+        return jsonify({'error': 'Unable to fetch products'}), 500
 
 @products_bp.route('/product/<int:product_id>/detail')
 @login_required
