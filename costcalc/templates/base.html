@@ -65,10 +65,10 @@
     </div>
 
     {% block scripts %}
-        <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/utils/jquery-3.6.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/utils/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/utils/gridjs.umd.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/utils/select2.min.js') }}"></script>
         <script>const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');</script>
     {% endblock %}
 </body>

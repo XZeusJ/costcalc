@@ -9,7 +9,6 @@ from costcalc.blueprints.auth import auth_bp
 from costcalc.blueprints.products import products_bp
 from costcalc.blueprints.resources import resources_bp
 from costcalc.extensions import db, login_manager, csrf, bootstrap
-from costcalc.models import User
 from costcalc.settings import config
 
 
@@ -61,10 +60,12 @@ def register_errors(app):
 
 def register_commands(app):
     @app.cli.command()
-    @click.option('--material',type=int, default=20, help='Quantity of material, maxium is 20.')
-    @click.option('--labor',type=int, default=20, help='Quantity of labor, maxium is 20.')
-    @click.option('--product',type=int, default=20, help='Quantity of product, maxium is 20.')
-    def forge(material, labor, product):
+    @click.argument('counts', nargs=3, type=int, required=False)
+    def forge(counts=None):
+        if counts is None:
+            counts = [5, 5, 10]  # 默认值
+        material, labor, product = counts
+        
         from costcalc.fakes import fake_users, fake_materials, fake_labors, fake_products
         db.drop_all()
         click.echo('Drop tables.')
@@ -80,6 +81,7 @@ def register_commands(app):
         click.echo(f'Generating {product} products...')
         fake_products(product)
         click.echo('Done.')
+
 
 if __name__ == '__main__':
     app = create_app()

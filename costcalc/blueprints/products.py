@@ -22,12 +22,13 @@ def manage_product():
 
 @products_bp.route('/product/get')
 def get_products():
+    p = Product.query.all()
+    fp = Product.query.filter_by(user_id=current_user.id).all()
     try:
         if current_user.role == 'admin':
-            products = Product.query.all()
+            products = p
         else:
-            products = Product.query.filter_by(user_id=current_user.id).all()
-        
+            products = fp
         products_list = [product.to_dict() for product in products]
         return jsonify(products_list)
     except Exception as e:
@@ -106,6 +107,7 @@ def edit_product(product_id):
     for i, pm in enumerate(pms):
         pmform = ProductMaterialForm(prefix=f'pmform-{i}', obj=pm)
         pmform.material_name.data = pm.material.name  # 设置材料名称字段的值
+        pmform.material_spec.data = pm.material.spec  # 设置材料规格字段的值
         pmform.materialID.data = pm.material.id  # 设置材料ID字段的值用来在edit_product.html中异步删除pm实例
         pmforms.append(pmform)
 

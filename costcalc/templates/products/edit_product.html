@@ -1,364 +1,75 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form %}
+{% from 'products/_product_form.html' import product_form %}
 
 {% block content %}
 <div class="container">
     <h3>编辑产品</h3>
     <form method="post" action="{{ url_for('products.edit_product', product_id=product.id) }}" id="product-form"  data-product-id="{{ product.id }}">
         {{ form.hidden_tag() }}
-        
-        <!-- 产品信息表单字段 -->
-        <div class="row mb-3">
-            <div class="col-md-3">
-                {{ form.name.label(class="form-label") }}
-                {{ form.name(class="form-control") }}
-            </div>
-        </div>
-        <hr />
-        
-        <!-- 动态材料表单 -->
-        <div class="d-flex justify-content-between align-items-center my-3">
-            <h5 class="mb-0">材料</h5>
-            <div>   
-                <button type="button" class="btn btn-primary btn-sm" id="add-new-material-btn">+新材料</button>
-                <button type="button" class="btn btn-primary btn-sm" id="add-material-btn">+已有材料</button>
-            </div>
-        </div>
-        <div id="materialforms-container">
-            {% for pmform in pmforms %}
-            <div class="row align-items-center mb-3 position-relative" data-material-id="{{ pmform.materialID.data }}">
-                <div class="col-md-3">
-                    {{ pmform.material_name.label(class="form-label") }}
-                    {{ pmform.material_name(class="form-control") }}
-                </div>
-                <div class="col-md-2">
-                    {{ pmform.net_weight.label(class="form-label") }}
-                    {{ pmform.net_weight(class="form-control") }}
-                </div>
-                <div class="col-md-2">
-                    {{ pmform.gross_weight.label(class="form-label") }}
-                    {{ pmform.gross_weight(class="form-control") }}
-                </div>
-                <div class="col-md-2">
-                    {{ pmform.qualification_rate.label(class="form-label") }}
-                    {{ pmform.qualification_rate(class="form-control") }}
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger btn-sm position-absolute" onclick="removeForm(this)">-</button>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <hr/>
-        
-        <!-- 动态人工表单 -->
-        <div class="d-flex justify-content-between align-items-center my-3">
-            <h5 class="mb-0">人工</h5>
-            <div>
-                <button type="button" class="btn btn-primary btn-sm" id="add-new-labor-btn">+新人工</button>
-                <button type="button" class="btn btn-primary btn-sm" id="add-labor-btn">+已有人工</button>
-            </div>
-        </div>
-        <div id="laborforms-container">
-            {% for plform in plforms %}
-            <div class="row align-items-center mb-3 position-relative" data-labor-id="{{ plform.laborID.data }}">
-                <div class="col-md-3">
-                    {{ plform.labor_name.label(class="form-label") }}
-                    {{ plform.labor_name(class="form-control") }}
-                </div>
-                <div class="col-md-2">
-                    {{ plform.process_time.label(class="form-label") }}
-                    {{ plform.process_time(class="form-control") }}
-                </div>
-                <div class="col-md-2">
-                    {{ plform.capacity.label(class="form-label") }}
-                    {{ plform.capacity(class="form-control") }}
-                </div>
-                <div class="col-md-2">
-                    {{ plform.qualification_rate.label(class="form-label") }}
-                    {{ plform.qualification_rate(class="form-control") }}
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger btn-sm position-absolute" onclick="removeForm(this)">-</button>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <hr/>
-        
-        <!-- 运输费 -->
-        <h5>运输</h5>
-        <div class="row mb-3">
-            <div class="col-md-3">
-                {{ form.trans_method.label(class="form-label") }}
-                {{ form.trans_method(class="form-control") }}
-            </div>
-            <div class="col-md-3">
-                {{ form.trans_dest.label(class="form-label") }}
-                {{ form.trans_dest(class="form-control") }}
-            </div>
-            <div class="col-md-3">
-                {{ form.trans_cost_kg.label(class="form-label") }}
-                {{ form.trans_cost_kg(class="form-control") }}
-            </div>
-        </div>
-        <hr/>
-
-        <!-- 定制化字段 -->
-        <h5>定制化</h5>
-        <div class="row mb-3">
-            <div class="col-md-2">
-                {{ form.customer_type.label(class="form-label") }}
-                {{ form.customer_type(class="form-control") }}
-            </div>
-            <div class="col-md-2">
-                {{ form.payment_term.label(class="form-label") }}
-                {{ form.payment_term(class="form-control") }}
-            </div>
-            <div class="col-md-2">
-                {{ form.customer_importance.label(class="form-label") }}
-                {{ form.customer_importance(class="form-control") }}
-            </div>
-            <div class="col-md-2">
-                {{ form.estimated_purchase_amount.label(class="form-label") }}
-                {{ form.estimated_purchase_amount(class="form-control") }}
-            </div>
-            <div class="col-md-2">
-                {{ form.region_price.label(class="form-label") }}
-                {{ form.region_price(class="form-control") }}
-            </div>
-            <div class="col-md-2">
-                {{ form.customer_prospect.label(class="form-label") }}
-                {{ form.customer_prospect(class="form-control") }}
-            </div>
-            <div class="col-md-2">
-                {{ form.product_risk.label(class="form-label") }}
-                {{ form.product_risk(class="form-control") }}
-            </div>
-            <div class="col-md-2">
-                {{ form.technical_quality_requirement.label(class="form-label") }}
-                {{ form.technical_quality_requirement(class="form-control") }}
-            </div>
-            <div class="col-md-2">
-                {{ form.customization_requirement.label(class="form-label") }}
-                {{ form.customization_requirement(class="form-control") }}
-            </div>
-        </div>
-        <hr />
-
-        <!-- 提交按钮 -->
-        <div class="row">
-            <div class="col text-end">
-                <button type="submit" class="btn btn-primary">提交</button>
-            </div>
-        </div>
+        {{ product_form(form, pmforms, plforms, is_edit=True) }}
     </form>
 </div>
-
 {% include 'resources/_material_form_modal.html' %}
 {% include 'resources/_labor_form_modal.html' %}
-
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
+<script src="{{ url_for('static', filename='js/productFormUtils.js') }}"></script>
 <script type="text/javascript">
-    var new_productmaterialform_url = "{{ url_for('products.new_pmform') }}";
-    var new_productlaborform_url = "{{ url_for('products.new_plform') }}";
-</script>
-<script>
     let formCounter = {
         material: {{ pmforms|length }},
         labor: {{ plforms|length }}
     };
 
-    function addForm(type) {
-        const url = type === 'material' ? new_productmaterialform_url : new_productlaborform_url;
-        const container = document.getElementById(`${type}forms-container`);
-
-        fetch(url)
-            .then(response => response.text())
-            .then(html => {
-                formCounter[type]++;
-                const newForm = document.createElement('div');
-                newForm.innerHTML = html.replace(/__prefix__/g, formCounter[type]);
-                const newSelect = newForm.querySelector(`select[name$="-${type}_choices"]`);
-                container.appendChild(newForm);
-                initializeSelect2WithPlaceholder(newSelect, `Select a ${type}`);
-                
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    function initializeSelect2WithPlaceholder(newSelect, placeholderText) {
-        const emptyOption = document.createElement('option');
-        emptyOption.value = "";
-        emptyOption.disabled = true;
-        emptyOption.selected = true;
-        emptyOption.hidden = true;
-        newSelect.insertBefore(emptyOption, newSelect.firstChild);
-
-        $(newSelect).select2({
-            placeholder: placeholderText,
-            allowClear: true,
-            width: '100%'
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('add-material-btn').addEventListener('click', function() {
+            addForm('material', 'materialforms-container', formCounter);
         });
-        // 打开时聚焦搜索框
-        $(document).on('select2:open', () => {
-            document.querySelector('.select2-search__field').focus();
+
+        document.getElementById('add-labor-btn').addEventListener('click', function() {
+            addForm('labor', 'laborforms-container', formCounter);
         });
-    }
 
+        document.getElementById('add-new-material-btn').addEventListener('click', function() {
+            $('#newMaterialModal').modal('show');
+        });
 
-    document.getElementById('add-material-btn').addEventListener('click', function() {
-        addForm('material');
-    });
+        document.getElementById('add-new-labor-btn').addEventListener('click', function() {
+            $('#newLaborModal').modal('show');
+        });
 
-    document.getElementById('add-labor-btn').addEventListener('click', function() {
-        addForm('labor');
-    });
-
-    function removeForm(button) {
-        const formRow = button.closest('.row');
-        const productId = document.getElementById('product-form').getAttribute('data-product-id');
-        const materialId = formRow.getAttribute('data-material-id');
-        const laborId = formRow.getAttribute('data-labor-id');
-
-        if (materialId || laborId) {
-            // 如果是旧表单，发送删除请求到后端
-            if (confirm('Are you sure you want to delete this item?')) {
-                const url = getDeleteUrl(productId, materialId, laborId);
-                sendDeleteRequest(url)
-                    .then(success => {
-                        if (success) {
-                            formRow.remove();
-                        } else {
-                            alert('Failed to delete the item.');
-                        }
-                    });
-            }
-        } else {
-            // 如果是新表单，直接删除DOM元素
-            formRow.remove();
-        }
-    }
-
-    document.getElementById('add-new-material-btn').addEventListener('click', function() {
-        $('#newMaterialModal').modal('show');
-    });
-
-    document.getElementById('newMaterialForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        submitForm(this, this.action).then(data => {
-            if (data.status === 'success') {
+        document.getElementById('newMaterialForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            submitForm(this, this.action, function(data) {
                 $('#newMaterialModal').modal('hide');
                 alert('新材料添加成功');
-                addMaterialToSelect2(data.new_material); 
-            } else {
-                alert('错误: ' + data.message);
-            }
+                addMaterialToSelect2(data.material);
+            }, function(errorMessage) {
+                alert('错误: ' + errorMessage);
+            });
         });
-    });
 
-    document.getElementById('add-new-labor-btn').addEventListener('click', function() {
-        $('#newLaborModal').modal('show');
-    });
-
-    document.getElementById('newLaborForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        submitForm(this, this.action).then(data => {
-            if (data.status === 'success') {
+        document.getElementById('newLaborForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            submitForm(this, this.action, function(data) {
                 $('#newLaborModal').modal('hide');
                 alert('新人工添加成功');
-                addLaborToSelect2(data.new_labor);
-            } else {
-                alert('错误: ' + data.message);
-            }
-        });
-    });
-
-    function submitForm(form, url) {
-        const formData = new FormData(form);
-        return fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-CSRFToken': csrfToken }
-        }).then(response => response.json());
-    }
-
-    function addMaterialToSelect2(material) {
-        $('select[id*="material_choices"]').each(function() {
-            var $select = $(this);
-            var newOption = new Option(material.name, material.id, false, false);
-            $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
-        });
-    }
-
-    function addLaborToSelect2(labor) {
-        $('select[id*="labor_choices"]').each(function() {
-            var $select = $(this);
-            var newOption = new Option(labor.name, labor.id, false, false);
-            $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
-        });
-    }
-
-
-    function getDeleteUrl(productId, materialId, laborId) {
-        if (materialId) {
-            return `/product/${productId}/material/${materialId}/delete`;
-        } else if (laborId) {
-            return `/product/${productId}/labor/${laborId}/delete`;
-        }
-        return null;
-    }
-
-    function sendDeleteRequest(url) {
-        return fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token() }}'
-            }
-        })
-        .then(response => response.ok)
-        .catch(error => {
-            console.error('Error:', error);
-            return false;
-        });
-    }
-
-    function checkDuplicatesBeforeSubmit() {
-        let values = [];
-        let isDuplicate = false;
-
-        // 收集所有 readonly 输入框的值
-        $('input[readonly]').each(function() {
-            const inputValue = $(this).val();
-            values.push(inputValue);
+                addLaborToSelect2(data.labor);
+            }, function(errorMessage) {
+                alert('错误: ' + errorMessage);
+            });
         });
 
-        // 检查所有 select 元素的选定值是否重复
-        $('#materialforms-container select, #laborforms-container select').each(function() {
-            const selectedText = $(this).find('option:selected').text();
-            if (values.indexOf(selectedText) !== -1 && selectedText !== "") {
-                isDuplicate = true;
-                return false; // 有重复，终止循环
-            }
-            values.push(selectedText);
-        });
-
-        return isDuplicate;
-    }
-
-    $(document).ready(function() {
-        $('#product-form').on('submit', function(e) {
-            if (checkDuplicatesBeforeSubmit()) {
+        document.getElementById('product-form').on('submit', function(e) {
+            // 调用函数时传入容器和 readonly 输入框的选择器
+            if (checkDuplicatesBeforeSubmit('#materialforms-container, #laborforms-container', 'input[readonly]')) {
                 e.preventDefault(); // 阻止表单提交
-                alert('你有重复的材料/人工选项，请选择不同的材料/人工选项。');
+                alert('你有重复的材料/人工选项或输入值，请选择不同的材料/人工选项或输入不同的值。');
             }
         });
+
     });
-
-
 </script>
 {% endblock %}
