@@ -1,19 +1,19 @@
 <!-- edit_labor_form.html -->
 <form action="{{ url_for('resources.edit_labor', labor_id=labor_id) }}" method="post" id="editLaborForm">
     {{ form.hidden_tag() }}
-    <div class="mb-3">
+    <div class="mb-2">
         <label for="name" class="form-label">工序名称</label>
         {{ form.name(class="form-control") }}
     </div>
-    <div class="mb-3">
+    <div class="mb-2">
         <label for="deprec_cost" class="form-label">折旧费用</label>
         {{ form.deprec_cost(class="form-control") }}
     </div>
-    <div class="mb-3">
+    <div class="mb-2">
         <label for="elec_cost" class="form-label">电费</label>
         {{ form.elec_cost(class="form-control") }}
     </div>
-    <div class="mb-3">
+    <div class="mb-2">
         <label for="labor_cost" class="form-label">人工费用</label>
         {{ form.labor_cost(class="form-control") }}
     </div>

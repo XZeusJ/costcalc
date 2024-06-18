@@ -1,15 +1,15 @@
 <!-- edit_material_form.html -->
 <form action="{{ url_for('resources.edit_material', material_id=material_id) }}" method="post" id="editMaterialForm">
     {{ form.hidden_tag() }}
-    <div class="mb-3">
+    <div class="mb-2">
         <label for="name" class="form-label">材料名称</label>
         {{ form.name(class="form-control") }}
     </div>
-    <div class="mb-3">
+    <div class="mb-2">
         <label for="spec" class="form-label">材料规格</label>
         {{ form.spec(class="form-control") }}
     </div>
-    <div class="mb-3">
+    <div class="mb-2">
         <label for="unit_price" class="form-label">单价/g</label>
         {{ form.unit_price(class="form-control") }}
     </div>

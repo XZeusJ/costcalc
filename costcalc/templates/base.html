@@ -15,15 +15,17 @@
 <body>
     <!-- Top Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ url_for('products.index') }}">CostCalc</a>
+        <a class="navbar-brand" href="{{ url_for('products.index') }}">CostCalc</a> 
+        {% if current_user.is_authenticated %}
         <div class="collapse navbar-collapse justify-content-end">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="btn nav-link" href="{{ url_for('auth.login') }}">用户</a>
-                    <a class="btn nav-link" href="{{ url_for('auth.logout') }}">退出</a>
+                    <a class="btn nav-link nav-link-custom" href="{{ url_for('auth.login') }}">用户</a>
+                    <a class="btn nav-link nav-link-custom" href="{{ url_for('auth.logout') }}">退出</a>
                 </li>
             </ul>
         </div>
+        {% endif %}
     </nav>
 
     <div class="container-flex">

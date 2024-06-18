@@ -52,66 +52,8 @@
     </div>
     <hr />
 
-    <!-- 运输费 -->
-    <h5>运输</h5>
-    <div class="row mb-3">
-        <div class="col-md-3">
-            {{ form.trans_method.label(class="form-label") }}
-            {{ form.trans_method(class="form-control") }}
-        </div>
-        <div class="col-md-3">
-            {{ form.trans_dest.label(class="form-label") }}
-            {{ form.trans_dest(class="form-control") }}
-        </div>
-        <div class="col-md-3">
-            {{ form.trans_cost_kg.label(class="form-label") }}
-            {{ form.trans_cost_kg(class="form-control") }}
-        </div>
-    </div>
-    <hr/>
-
-    <!-- 定制化字段 -->
-    <h5>定制化</h5>
-    <div class="row mb-3">
-        <div class="col-md-2">
-            {{ form.customer_type.label(class="form-label") }}
-            {{ form.customer_type(class="form-control") }}
-        </div>
-        <div class="col-md-2">
-            {{ form.payment_term.label(class="form-label") }}
-            {{ form.payment_term(class="form-control") }}
-        </div>
-        <div class="col-md-2">
-            {{ form.customer_importance.label(class="form-label") }}
-            {{ form.customer_importance(class="form-control") }}
-        </div>
-        <div class="col-md-2">
-            {{ form.estimated_purchase_amount.label(class="form-label") }}
-            {{ form.estimated_purchase_amount(class="form-control") }}
-        </div>
-        <div class="col-md-2">
-            {{ form.region_price.label(class="form-label") }}
-            {{ form.region_price(class="form-control") }}
-        </div>
-        <div class="col-md-2">
-            {{ form.customer_prospect.label(class="form-label") }}
-            {{ form.customer_prospect(class="form-control") }}
-        </div>
-        <div class="col-md-2">
-            {{ form.product_risk.label(class="form-label") }}
-            {{ form.product_risk(class="form-control") }}
-        </div>
-        <div class="col-md-2">
-            {{ form.technical_quality_requirement.label(class="form-label") }}
-            {{ form.technical_quality_requirement(class="form-control") }}
-        </div>
-        <div class="col-md-2">
-            {{ form.customization_requirement.label(class="form-label") }}
-            {{ form.customization_requirement(class="form-control") }}
-        </div>
-    </div>
-    <hr />
-
+    <!-- 运输、系数、定制化字段 -->
+    {{ render_other_fields(form) }}
 
     <!-- 提交按钮 -->
     <div class="row">
@@ -165,7 +107,7 @@
 {% endmacro %}
 
 {% macro render_other_fields(form) %}
-<!-- 运输费用字段 -->
+<!-- 运输费字段 -->
 <h5>运输</h5>
 <div class="row mb-3">
     <div class="col-md-2">

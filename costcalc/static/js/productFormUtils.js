@@ -2,25 +2,6 @@
 var new_productmaterialform_url = "/productmaterial/newform";
 var new_productlaborform_url = "/productlabor/newform";
 
-function initializeSelect2WithPlaceholder(newSelect, placeholderText) {
-    const emptyOption = document.createElement('option');
-    emptyOption.value = "";
-    emptyOption.disabled = true;
-    emptyOption.selected = true;
-    emptyOption.hidden = true;
-    newSelect.insertBefore(emptyOption, newSelect.firstChild);
-
-    $(newSelect).select2({
-        placeholder: placeholderText,
-        allowClear: true,
-        width: '100%'
-    });
-    // 打开时聚焦搜索框
-    $(document).on('select2:open', () => {
-        document.querySelector('.select2-search__field').focus();
-    });
-}
-
 function addForm(type, containerId, formCounter) {
     const url = type === 'material' ? new_productmaterialform_url : new_productlaborform_url;
     const container = document.getElementById(containerId);
@@ -41,20 +22,24 @@ function addForm(type, containerId, formCounter) {
         .catch(error => console.error('Error:', error));
 }
 
-function submitForm(form, url, onSuccess, onError) {
-    const formData = new FormData(form);
-    return fetch(url, {
-        method: 'POST',
-        body: formData,
-        headers: { 'X-CSRFToken': csrfToken }
-    }).then(response => response.json())
-      .then(data => {
-          if (data.status === 'success') {
-              onSuccess(data);
-          } else {
-              onError(data.message);
-          }
-      });
+
+function initializeSelect2WithPlaceholder(newSelect, placeholderText) {
+    const emptyOption = document.createElement('option');
+    emptyOption.value = "";
+    emptyOption.disabled = true;
+    emptyOption.selected = true;
+    emptyOption.hidden = true;
+    newSelect.insertBefore(emptyOption, newSelect.firstChild);
+
+    $(newSelect).select2({
+        placeholder: placeholderText,
+        allowClear: true,
+        width: '100%'
+    });
+    // 打开时聚焦搜索框
+    $(document).on('select2:open', () => {
+        document.querySelector('.select2-search__field').focus();
+    });
 }
 
 function initializeSpecLoading(formElement) {
@@ -74,6 +59,38 @@ function initializeSpecLoading(formElement) {
                 specSelect.select2();
             })
             .catch(error => console.error('Error loading specs:', error));
+    });
+}
+
+function submitForm(form, url, onSuccess, onError) {
+    const formData = new FormData(form);
+    return fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRFToken': csrfToken }
+    }).then(response => response.json())
+      .then(data => {
+          if (data.status === 'success') {
+              onSuccess(data);
+          } else {
+              onError(data.message);
+          }
+      });
+}
+
+function addMaterialToSelect2(material) {
+    $('select[id*="material_choices"]').each(function() {
+        var $select = $(this);
+        var newOption = new Option(material.name, material.id, false, false);
+        $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
+    });
+}
+
+function addLaborToSelect2(labor) {
+    $('select[id*="labor_choices"]').each(function() {
+        var $select = $(this);
+        var newOption = new Option(labor.name, labor.id, false, false);
+        $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
     });
 }
 
@@ -121,22 +138,6 @@ function sendDeleteRequest(url) {
           console.error('Error:', error);
           return false;
       });
-}
-
-function addMaterialToSelect2(material) {
-    $('select[id*="material_choices"]').each(function() {
-        var $select = $(this);
-        var newOption = new Option(material.name, material.id, false, false);
-        $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
-    });
-}
-
-function addLaborToSelect2(labor) {
-    $('select[id*="labor_choices"]').each(function() {
-        var $select = $(this);
-        var newOption = new Option(labor.name, labor.id, false, false);
-        $select.append(newOption).trigger('change'); // 更新 select2 控件并触发 change 事件
-    });
 }
 
 function checkDuplicatesBeforeSubmit(selectContainerSelector, inputSelector = null) {
