@@ -35,9 +35,9 @@
         </ul>
         {% endif %}
 
-        <button class="navbar-toggler" style="margin-right: 20px;" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarCollapse" aria-controls="sidebarCollapse" aria-expanded="true" aria-label="Toggle sidebar">
+        <button class="navbar-toggler d-lg-none" style="margin-right: 20px;" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarCollapse" aria-controls="sidebarCollapse" aria-expanded="false" aria-label="Toggle sidebar">
             <span class="navbar-toggler-icon"></span>
-        </button>
+        </button>      
     </nav>
     
     
@@ -45,23 +45,21 @@
     <div class="container-flex">
         {% if current_user.is_authenticated %}
         <!-- Sidebar -->
-        <div class="collapse show" id="sidebarCollapse">
-            <div class="sidebar">
-                <!-- <h5>导航栏</h5> -->
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom {% if request.path == url_for('products.manage_product') %}active{% endif %}" href="{{ url_for('products.manage_product') }}">产品</a>
-                    </li>
-                    {% if current_user.role == 'admin' %}
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom {% if request.path == url_for('resources.manage_material') %}active{% endif %}" href="{{ url_for('resources.manage_material') }}">材料</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom {% if request.path == url_for('resources.manage_labor') %}active{% endif %}" href="{{ url_for('resources.manage_labor') }}">人工</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
+        <div class="sidebar collapse d-lg-block" id="sidebarCollapse">
+            <!-- <h5>导航栏</h5> -->
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom {% if request.path == url_for('products.manage_product') %}active{% endif %}" href="{{ url_for('products.manage_product') }}">产品</a>
+                </li>
+                {% if current_user.role == 'admin' %}
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom {% if request.path == url_for('resources.manage_material') %}active{% endif %}" href="{{ url_for('resources.manage_material') }}">材料</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom {% if request.path == url_for('resources.manage_labor') %}active{% endif %}" href="{{ url_for('resources.manage_labor') }}">人工</a>
+                </li>
+                {% endif %}
+            </ul>
         </div>
         {% endif %}
 
