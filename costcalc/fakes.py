@@ -126,7 +126,7 @@ def fake_products(count=20):
             user_id = (i % user_count) + 1,
             trans_method=fake.word(),
             trans_dest=fake.city(),
-            trans_cost_kg=fake.random_number(digits=2),
+            trans_cost_kg = round(random.uniform(0.01, 0.1), 2),
             dev_coef=fake.random_number(digits=1),
             fac_coef=fake.random_number(digits=1),
             admin_coef=fake.random_number(digits=1),

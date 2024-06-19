@@ -12,10 +12,10 @@ body {
 
 .navbar-brand-custom {
     font-family: 'Dancing Script', cursive;
-    font-size: 1.7rem; /* 根据需要调整字体大小 */
+    font-size: 2rem; /* 根据需要调整字体大小 */
     font-weight: 700; /* 确保使用加粗字体 */
     color: #304c04;
-    text-decoration: none;
+    text-decoration:underline;
 }
 
 .sidebar {
@@ -23,7 +23,7 @@ body {
     padding: 20px;
 }
 .nav-link.active {
-    background-color: #304c04;
+    background: linear-gradient(to right, #304c04, #4c7404);
     color: #ffffff;
 }
 .content {
@@ -33,6 +33,10 @@ body {
 
 .nav-item {
     display: flex; /* Flexbox to keep items inline */
+}
+
+.nav-item a{
+    color:  linear-gradient(to right, #304c04, #4c7404);
 }
 
 .nav-link {
@@ -48,16 +52,16 @@ body {
     border-radius: 4px;
     text-align: start;
     text-decoration: none;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.1s, color 0.1s;
 }
 
 .nav-link-top {
-    padding: 0;
+    padding: 3px;
 }
 
 
 .nav-link-custom:hover {
-    background-color: #304c04;
+    background: linear-gradient(to right, #304c04, #4c7404);
     color: #ffffff;
 }
 
@@ -67,3 +71,8 @@ body {
     vertical-align: middle;  /* 垂直居中对齐 */
     word-wrap: break-word;  /* 如果内容超出宽度则换行 */
 }
+
+/* .btn-primary {
+    color: #fff;
+    background: linear-gradient(to right, #304c04, #4c7404);
+} */

@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function createActionButtons(laborId) {
-        return gridjs.h('div', { className: 'action-buttons' }, [
+        return gridjs.h('div', { className: 'action-buttons d-flex' }, [
             createButton('编辑', 'btn-primary', () => editLabor(laborId)),
             createButton('删除', 'btn-danger', () => deleteLabor(laborId))
         ]);
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function createButton(text, bgColor, onClick) {
         return gridjs.h('button', {
-            className: `border rounded-md ${bgColor}`,
+            className: `me-1 ${bgColor}`,
             onClick: onClick
         }, text);
     }

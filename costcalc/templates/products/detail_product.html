@@ -3,7 +3,7 @@
 {% block content %}
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h3 style="flex: 1; text-align: center;">{{ product.name }}</h3>
+    <h3 style="flex: 1; text-align: left;">{{ product.name }}</h3>
     <a href="{{ url_for('products.edit_product', product_id=product.id) }}" class="btn btn-primary" style="vertical-align: top;">编辑</a>
 </div>
 
