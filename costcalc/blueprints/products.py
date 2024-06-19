@@ -22,20 +22,12 @@ def manage_product():
 
 @products_bp.route('/product/get')
 def get_products():
-    p = Product.query.all()
-    fp = Product.query.filter_by(user_id=current_user.id).all()
-    try:
-        if current_user.role == 'admin':
-            products = p
-        else:
-            products = fp
-        products_list = [product.to_dict() for product in products]
-        return jsonify(products_list)
-    except Exception as e:
-        # 记录错误信息到日志文件中，方便调试
-        current_app.logger.error(f'Error fetching products: {e}')
-        # 返回一个错误信息给前端
-        return jsonify({'error': 'Unable to fetch products'}), 500
+    if current_user.role == 'admin':
+        products = Product.query.all()
+    else:
+        products = Product.query.filter_by(user_id=current_user.id).all()
+    products_list = [product.to_dict() for product in products]
+    return jsonify(products_list)
 
 @products_bp.route('/product/<int:product_id>/detail')
 @login_required

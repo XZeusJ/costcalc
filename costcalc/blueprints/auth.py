@@ -20,6 +20,13 @@ def login():
         return redirect(url_for('products.index'))
     return render_template('auth/login.html', title='Sign In', form=form)
 
+
+@auth_bp.route('/guest_login')
+def guest_login():
+    guest_user = User.query.filter_by(username='guest').first()
+    login_user(guest_user)
+    return redirect(url_for('products.index'))
+
 @auth_bp.route('/logout')
 def logout():
     logout_user()
@@ -35,6 +42,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!', 'success')
-        return redirect(url_for('auth.login'))
+        login_user(user)  # 自动登录用户
+        flash('Congratulations, you are now a registered user and logged in!', 'success')
+        return redirect(url_for('products.index'))  # 重定向到目标页面
     return render_template('auth/register.html', title='Register', form=form)

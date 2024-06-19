@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired, Length, Optional,EqualTo
 from costcalc.models import Material, Labor
 from costcalc.extensions import db
 
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -16,6 +17,13 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     role = SelectField('Role', choices=[('admin', 'Admin'), ('sales', 'Sales')], validators=[DataRequired()])
     submit = SubmitField('Register')
+
+    def validate_username(self, username):
+        from costcalc.models import User
+        from flask import flash
+        user = User.query.filter_by(username=username.data).first()
+        if user is not None:
+            flash('Username already exists.', 'danger')
 
 class MaterialForm(FlaskForm):
     name = StringField('材料名称', validators=[DataRequired(), Length(1, 20)])

@@ -20,9 +20,10 @@
                           {{ form.password(class="form-control", id="password") }}
                       </div>
                       <div class="d-flex justify-content-between">
-                          <button type="submit" class="btn btn-primary flex-grow-1 me-2">登录</button>
                           <button class="btn btn-secondary flex-grow-1" onclick="loginAsAdmin()">管理员</button>
                           <button class="btn btn-secondary flex-grow-1 ms-2" onclick="loginAsSales()">业务员</button>
+                          <button type="submit" class="btn btn-primary flex-grow-1 ms-2">登录</button>
+                          <button type="button" class="btn btn-warning flex-grow-1 ms-2" onclick="loginAsGuest()">访客登录</button>
                       </div>
                   </form>
                   <hr>
@@ -43,9 +44,13 @@ function loginAsAdmin() {
 }
 
 function loginAsSales() {
-    document.getElementById('username').value = 'cxj';
+    document.getElementById('username').value = 'lxp';
     document.getElementById('password').value = '123';
     document.getElementById('loginForm').submit();
+}
+
+function loginAsGuest() {
+    window.location.href = "{{ url_for('auth.guest_login') }}"; // 指向后端处理访客登录的路由
 }
 </script>
 

@@ -12,8 +12,8 @@ def fake_users():
     users = [
         User(username='xzj', role='admin'),
         User(username='hym', role='admin'),
-        User(username='cxj', role='sales'),
-        User(username='lxp', role='sales')
+        User(username='lxp', role='sales'),
+        User(username='guest', role='sales'),
     ]
     for user in users:
         user.set_password('123')  # 假设所有用户密码设置为 '123'

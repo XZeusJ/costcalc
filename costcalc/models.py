@@ -13,7 +13,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    role = db.Column(db.String(64), nullable=False)  # "admin" or "sales"
+    role = db.Column(db.String(64), nullable=False)  # "admin" or "sales" or "guest"
     products = db.relationship('Product', back_populates='user') # 定义关系属性
     materials = db.relationship('Material', backref='user', lazy=True)
     labors = db.relationship('Labor', backref='user', lazy=True)
