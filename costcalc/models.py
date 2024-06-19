@@ -105,7 +105,7 @@ class Product(db.Model):
             {
                 '材料名称': pm.material.name,
                 '材料规格': pm.material.spec,
-                '单价/g': pm.material.unit_price,
+                '单价/g': round(pm.material.unit_price,6),
                 '材料净重': pm.net_weight,
                 '材料毛边': pm.gross_weight,
                 '材料毛重': pm.total_weight,

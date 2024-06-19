@@ -18,10 +18,16 @@ body {
     text-decoration:underline;
 }
 
+@media (max-width: 992px) {
+    .sidebar {
+        display: none;
+    }
+}
 .sidebar {
     background-color: #f8f9fa;
     padding: 20px;
 }
+
 .nav-link.active {
     background: linear-gradient(to right, #304c04, #4c7404);
     color: #ffffff;
