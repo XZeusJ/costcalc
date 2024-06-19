@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form %}
-
+{% block title %} 产品管理 {% endblock %}
 {% block content%}
 <div id="table" data-new-product-url="{{ url_for('products.new_product') }}"></div>
 {% endblock %}

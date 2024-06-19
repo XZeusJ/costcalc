@@ -137,7 +137,7 @@ class Product(db.Model):
             '运输方式': self.trans_method,
             '目的地': self.trans_dest,
             '运输费/KG': self.trans_cost_kg,
-            '运输费/个': self.trans_cost
+            '运输费/个': round(self.trans_cost, 6),
         }
 
     @property

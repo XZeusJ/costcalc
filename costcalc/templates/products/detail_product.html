@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
-
+{% block title %} 产品详情 {% endblock %}
 {% block content %}
-<div>
-    <h3 style="display: inline-block;">产品名称：{{ product.name }}</h3>
-    <a href="{{ url_for('products.edit_product', product_id=product.id) }}" class="btn btn-primary" style="float:right; vertical-align: top;">编辑</a>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h3 style="flex: 1; text-align: center;">{{ product.name }}</h3>
+    <a href="{{ url_for('products.edit_product', product_id=product.id) }}" class="btn btn-primary" style="vertical-align: top;">编辑</a>
 </div>
 
 <table class="table table-bordered">
-    <thead>
-        <tr><th colspan="8" style="text-align: center; background-color: antiquewhite;">原材料费用</th></tr>
+    <tbody>
+
+        <!-- 原材料费用 -->
+        <tr><th colspan="9" style="text-align: center; background-color: antiquewhite;">原材料费用</th></tr>
         <tr>
             <th>材料名称</th>
             <th>材料规格</th>
@@ -20,9 +23,8 @@
             <th>材料毛重</th>
             <th>合格率</th>
             <th>Ttl(CNY)</th>
+            <th></th> <!-- 空列用于填充 -->
         </tr>
-    </thead>
-    <tbody>
         {% for material in product.materials_dict %}
         <tr>
             <td>{{ material.get('材料名称') }}</td>
@@ -35,24 +37,12 @@
             <td>{{ material.get('材料毛重') }}</td>
             <td>{{ material.get('合格率') }}</td>
             <td>{{ material.get('TTL(CNY)') }}</td>
+            <td></td> <!-- 空列用于填充 -->
         </tr>
         {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-            {% if current_user.role == 'admin' %}
-            <td colspan="7"></td>
-            {% else %}
-            <td colspan="6"></td>
-            {% endif %}
-            <td>{{ product.cost_dict.get('材料费') }}</td>
-        </tr>
-    </tfoot>
-</table>
 
-<table class="table table-bordered">
-    <thead>
-        <tr><th colspan="8" style="text-align: center; background-color: antiquewhite;">设备、人工费</th></tr>
+        <!-- 设备、人工费 -->
+        <tr><th colspan="9" style="text-align: center; background-color: antiquewhite;">设备、人工费</th></tr>
         <tr>
             <th>工序</th>
             <th>设备折旧</th>
@@ -62,9 +52,8 @@
             <th>产能/次</th>
             <th>合格率</th>
             <th>Ttl(CNY)</th>
+            <th></th> <!-- 空列用于填充 -->
         </tr>
-    </thead>
-    <tbody>
         {% for labor in product.labors_dict %}
         <tr>
             <td>{{ labor.get('工序') }}</td>
@@ -75,88 +64,92 @@
             <td>{{ labor.get('产能/次') }}</td>
             <td>{{ labor.get('合格率') }}</td>
             <td>{{ labor.get('TTL(CNY)') }}</td>
+            <td></td> <!-- 空列用于填充 -->
         </tr>
         {% endfor %}
-    <tfoot>
-        <tr>
-            <td colspan="7"></td>
-            <td>{{ product.cost_dict.get('人工费') }}</td>
-        </tr>
-    </tfoot>
-    </tbody>
-</table>
 
-<table class="table table-bordered">
-    <thead>
-        <tr><th colspan="4" style="text-align: center; background-color: antiquewhite;">运输费</th></tr>
-    </thead>
-    <tbody>
+        <!-- 运输费 -->
+        <tr><th colspan="9" style="text-align: center; background-color: antiquewhite;">运输费</th></tr>
         <tr>
             <th>运输方式</th>
             <th>目的地</th>
             <th>运输费/KG</th>
             <th>运输费/个</th>
+            <th></th> <!-- 空列用于填充 -->
+            <th></th> <!-- 空列用于填充 -->
+            <th></th> <!-- 空列用于填充 -->
+            <th></th> <!-- 空列用于填充 -->
+            <th></th> <!-- 空列用于填充 -->
         </tr>
         <tr>
             <td>{{ product.trans_dict.get('运输方式') }}</td>
             <td>{{ product.trans_dict.get('目的地') }}</td>
             <td>{{ product.trans_dict.get('运输费/KG') }}</td>
             <td>{{ product.trans_dict.get('运输费/个') }}</td>
+            <td></td> <!-- 空列用于填充 -->
+            <td></td> <!-- 空列用于填充 -->
+            <td></td> <!-- 空列用于填充 -->
+            <td></td> <!-- 空列用于填充 -->
+            <td></td> <!-- 空列用于填充 -->
         </tr>
-    </tbody>
-</table>
 
-<table class="table table-bordered">
-    <thead>
-        <tr><th colspan="7" style="text-align: center; background-color: antiquewhite;">费用系数</th></tr>
-    </thead>
-    <tbody>
+        <!-- 费用系数 -->
+        <tr><th colspan="9" style="text-align: center; background-color: antiquewhite;">费用系数</th></tr>
         <tr>
             {% for key, value in product.coef_dict.items() %}
             <th>{{ key }}</th>
+            {% endfor %}
+            {% for i in range(9 - product.coef_dict|length) %}
+            <th></th>
             {% endfor %}
         </tr>
         <tr>
             {% for key, value in product.coef_dict.items() %}
             <td>{{ value }}</td>
             {% endfor %}
+            {% for i in range(9 - product.coef_dict|length) %}
+            <td></td>
+            {% endfor %}
         </tr>
-    </tbody>
-</table>
 
-<table class="table table-bordered">
-    <thead>
+        <!-- 客户信息 -->
         <tr><th colspan="9" style="text-align: center; background-color: antiquewhite;">客户信息</th></tr>
-    </thead>
-    <tbody>
         <tr>
             {% for key, value in product.customization_dict.items() %}
             <th>{{ key }}</th>
+            {% endfor %}
+            {% for i in range(9 - product.customization_dict|length) %}
+            <th></th>
             {% endfor %}
         </tr>
         <tr>
             {% for key, value in product.customization_dict.items() %}
             <td>{{ value }}</td>
             {% endfor %}
+            {% for i in range(9 - product.customization_dict|length) %}
+            <td></td>
+            {% endfor %}
         </tr>
-    </tbody>
-</table>
 
-<table class="table table-bordered">
-    <thead>
-        <tr><th colspan="6" style="text-align: center; background-color: antiquewhite;">总费用</th></tr>
-    </thead>
-    <tbody>
+        <!-- 总费用 -->
+        <tr><th colspan="9" style="text-align: center; background-color: antiquewhite;">总费用</th></tr>
         <tr>
             {% for key, value in product.cost_dict.items() %}
             <th>{{ key }}</th>
+            {% endfor %}
+            {% for i in range(9 - product.cost_dict|length) %}
+            <th></th>
             {% endfor %}
         </tr>
         <tr>
             {% for key, value in product.cost_dict.items() %}
             <td>{{ value }}</td>
             {% endfor %}
+            {% for i in range(9 - product.cost_dict|length) %}
+            <td></td>
+            {% endfor %}
         </tr>
+
     </tbody>
 </table>
 

@@ -12,9 +12,10 @@ body {
 
 .navbar-brand-custom {
     font-family: 'Dancing Script', cursive;
-    font-size: 2rem; /* 根据需要调整字体大小 */
+    font-size: 1.7rem; /* 根据需要调整字体大小 */
     font-weight: 700; /* 确保使用加粗字体 */
     color: #304c04;
+    text-decoration: none;
 }
 
 .sidebar {
@@ -22,7 +23,7 @@ body {
     padding: 20px;
 }
 .nav-link.active {
-    background-color: #007bff;
+    background-color: #304c04;
     color: #ffffff;
 }
 .content {
@@ -41,18 +42,28 @@ body {
 /* 导航栏样式 */
 .nav-link-custom {
     display: block;
-    padding: 10px 25px;
+    padding: 5px 25px;
     margin-bottom: 5px;
     color: #000000;
-    border-bottom: 1px solid #ddd;
     border-radius: 4px;
     text-align: start;
     text-decoration: none;
     transition: background-color 0.3s, color 0.3s;
 }
 
+.nav-link-top {
+    padding: 0;
+}
+
+
 .nav-link-custom:hover {
-    background-color: #007bff;
+    background-color: #304c04;
     color: #ffffff;
 }
 
+.table th, .table td {
+    width: 150px;  /* 设置单元格的固定宽度 */
+    text-align: center;  /* 居中文本 */
+    vertical-align: middle;  /* 垂直居中对齐 */
+    word-wrap: break-word;  /* 如果内容超出宽度则换行 */
+}
