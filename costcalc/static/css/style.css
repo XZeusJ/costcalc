@@ -9,6 +9,14 @@ body {
     flex: 1;
     display: flex;
 }
+
+.navbar-brand-custom {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem; /* 根据需要调整字体大小 */
+    font-weight: 700; /* 确保使用加粗字体 */
+    color: #304c04;
+}
+
 .sidebar {
     background-color: #f8f9fa;
     padding: 20px;
